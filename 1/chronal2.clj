@@ -2,17 +2,13 @@
   (try (Integer/parseInt number-string)
     (catch Exception e nil)))
 
-(defn first-frequency [changes]
-  (loop
-    [[f & more] changes
-     sum 0
-     seen #{}]
-    (let [x (+ f sum)]
-      (if (contains? seen x)
-        x
-        (recur more x (conj seen x))
-        ))))
+(defn first-frequency [[sum seen] change]
+    (let [new-sum (+ change sum)]
+      (if (contains? seen new-sum)
+        (reduced new-sum)
+        [new-sum (conj seen new-sum)]
+        )))
 
 (println
   (with-open [rdr (clojure.java.io/reader "input.txt")]
-    (first-frequency (cycle (map parse-int (line-seq rdr))))))
+    (reduce first-frequency [0 #{}] (cycle (map parse-int (line-seq rdr))))))
