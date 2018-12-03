@@ -10,11 +10,7 @@ def parse(line):
   x, y = [int(i) for i in coords.split(',')]
   w, h = [int(i) for i in size.split('x')]
 
-  cs = set()
-  for xs in range(x, x+w):
-    for ys in range(y, y+h):
-        cs.add((xs, ys))
-
+  cs = set([(xs, ys) for xs in range(x, x+w) for ys in range(y, y+h)])
   return (id, cs)
 
 def heatmap(cs):
@@ -25,11 +21,6 @@ def heatmap(cs):
 
 def filter_dict(d, fn):
     return {k: v for k, v in d.iteritems() if fn(k, v)}
-
-def overlaps(f1, f2):
-    both = list(f1)
-    both.extend(f2)
-    return len(both) > len(set(both))
 
 fs = map(parse, sys.stdin)
 xs = [x[1] for x in fs]

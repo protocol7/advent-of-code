@@ -9,12 +9,7 @@ def parse(line):
   x, y = [int(i) for i in coords.split(',')]
   w, h = [int(i) for i in size.split('x')]
 
-  cs = []
-  for xs in range(x, x+w):
-    for ys in range(y, y+h):
-        cs.append((xs, ys))
-
-  return cs
+  return [(xs, ys) for xs in range(x, x+w) for ys in range(y, y+h)]
 
 def heatmap(cs):
     d = defaultdict(int)
