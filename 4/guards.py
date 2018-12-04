@@ -1,5 +1,5 @@
 import sys
-from collections import defaultdict
+from collections import defaultdict, Counter
 import operator
 
 def parse(line):
@@ -23,20 +23,18 @@ def parse_lines(lines):
 entries = parse_lines(sorted(sys.stdin))
 
 # sum minutes asleep per guard, and sum per minute per guard
-spg = defaultdict(int)
-minutes = defaultdict(lambda: defaultdict(int))
+spg = Counter()
+minutes = defaultdict(lambda: Counter())
 for e in entries:
     spg[e[0]] += e[1]
     for m in e[2]:
         minutes[e[0]][m] += 1
 
 # get guard with most minutes asleep
-sorted_spg = sorted(spg.items(), key=operator.itemgetter(1))
-guard = sorted_spg[-1][0]
+guard = spg.most_common(1)[0][0]
 
 # get the minute that guard was most asleep
-sorted_min = sorted(minutes[guard].items(), key=operator.itemgetter(1))
-minute = sorted_min[-1][0]
+minute = minutes[guard].most_common(1)[0][0]
 
 # print result
 print(guard * minute)
