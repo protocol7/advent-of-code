@@ -1,21 +1,19 @@
 import sys
 
 def parse_node(inp):
-    c_count = inp[0]
-    m_count = inp[1]
-
     msum = 0
-    end_pos = 2
-    for c in range(c_count):
-        ep, ms = parse_node(inp[end_pos:])
-        end_pos += ep
+    pos = 2
+    for c in range(inp[0]):
+        p, ms = parse_node(inp[pos:])
+        pos += p
         msum += ms
 
-    msum += sum(inp[end_pos:end_pos + m_count])
+    m_count = inp[1]
+    msum += sum(inp[pos:pos + m_count])
 
-    end_pos += m_count
+    pos += m_count
 
-    return (end_pos, msum)
+    return pos, msum
 
 line = sys.stdin.read().strip()
 root = parse_node([int(x) for x in line.split()])
