@@ -1,45 +1,25 @@
 import sys
-from collections import defaultdict, Counter
+from collections import defaultdict
 
-def flatmap(f, items):
-    return chain.from_iterable(imap(f, items))
-
-def parse(line):
-    x, _, y = line.split()
-    return x, y
+def filter_dict(d, fn):
+    return {k: v for k, v in d.iteritems() if fn(k, v)}
 
 inp = list(sys.stdin)
 
 initial = inp[0].split()[2]
-
-lines = map(parse, inp[2:])
-patterns = defaultdict(lambda: ".")
-for l1, l2 in lines:
-    patterns[l1] = l2
-
-
 pots = defaultdict(lambda: ".")
-
 for i, p in enumerate(initial):
     pots[i] = p
 
-def cc(pots):
-    c = 0
-    for k, v in pots.iteritems():
-        if v == "#":
-            c += k
-    return c
+patterns = defaultdict(lambda: ".")
+for line in inp[2:]:
+    x, _, y = line.split()
+    patterns[x] = y
 
-def debug(pots):
-    s = ""
-    start = min(pots.keys())
-    end = max(pots.keys())
-    for p in range(start, end):
-        s += pots[p]
-    return s
-
-
-for gen in range(5000):
+last_sum = 0
+diff = 0
+gens = 1000 # assume cycle is stable at this generation
+for gen in range(gens):
     start = min(pots.keys()) - 2
     end = max(pots.keys()) + 2
     new_pots = defaultdict(lambda: ".")
@@ -49,8 +29,9 @@ for gen in range(5000):
         if pot == "#":
             new_pots[p] = pot
 
-    s2 = debug(new_pots)
-    s1 = debug(pots)
-
-    print(str(gen) + "," + str(cc(new_pots)))
+    s = sum(filter_dict(new_pots, lambda _, v: v == "#"))
+    diff = s - last_sum
+    last_sum = s
     pots = new_pots
+
+print((50000000000 - gens) * diff + last_sum)
