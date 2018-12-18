@@ -32,14 +32,12 @@ for tick in range(500):
             a = adjecent(m, x, y)
             cur = m[y][x]
             if cur == ".":
-                # open -> threes
                 if count(m, a, "|") >= 3:
                     nr.append("|")
                     threes += 1
                 else:
                     nr.append(".")
             elif cur == "|":
-                # open -> threes
                 if count(m, a, "#") >= 3:
                     nr.append("#")
                     yards += 1
@@ -47,7 +45,6 @@ for tick in range(500):
                     nr.append("|")
                     threes += 1
             elif cur == "#":
-                # open -> threes
                 if count(m, a, "#") >= 1 and count(m, a, "|") >= 1:
                     nr.append("#")
                     yards += 1

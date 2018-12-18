@@ -36,19 +36,16 @@ for tick in range(10):
             a = adjecent(m, x, y)
             cur = m[y][x]
             if cur == ".":
-                # open -> threes
                 if count(m, a, "|") >= 3:
                     nr.append("|")
                 else:
                     nr.append(".")
             elif cur == "|":
-                # open -> threes
                 if count(m, a, "#") >= 3:
                     nr.append("#")
                 else:
                     nr.append("|")
             elif cur == "#":
-                # open -> threes
                 if count(m, a, "#") >= 1 and count(m, a, "|") >= 1:
                     nr.append("#")
                 else:
