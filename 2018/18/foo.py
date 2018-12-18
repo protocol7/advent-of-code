@@ -14,7 +14,7 @@ def adjecent(m, x, y):
             elif sx <0 or sy <0 or sx >= w or sy >= h:
                 pass
             else:
-                a.append((x+xx, y+yy))
+                a.append((sx, sy))
     return a
 
 def count(m, a, target):
@@ -34,18 +34,17 @@ for tick in range(10):
         nr = []
         for x, c in enumerate(row):
             a = adjecent(m, x, y)
-            cur = m[y][x]
-            if cur == ".":
+            if c == ".":
                 if count(m, a, "|") >= 3:
                     nr.append("|")
                 else:
                     nr.append(".")
-            elif cur == "|":
+            elif c == "|":
                 if count(m, a, "#") >= 3:
                     nr.append("#")
                 else:
                     nr.append("|")
-            elif cur == "#":
+            elif c == "#":
                 if count(m, a, "#") >= 1 and count(m, a, "|") >= 1:
                     nr.append("#")
                 else:
