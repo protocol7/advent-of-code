@@ -22,7 +22,7 @@ def count(m, a, target):
 
 m = [l.strip() for l in sys.stdin]
 
-for tick in range(500):
+for tick in range(1, 500):
     nm = []
     yards = 0
     threes = 0
@@ -51,6 +51,6 @@ for tick in range(500):
                     nr += "."
         nm.append(nr)
     m = nm
-    print("%s\t%s" % (tick+1, yards * threes))
+    print("%s\t%s" % (tick, yards * threes))
 
 # https://docs.google.com/spreadsheets/d/1QdiNDy6kkdnNmK4Q4qzP70aXHT-HNweKN_z7gH7g0bo/edit
