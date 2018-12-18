@@ -31,25 +31,25 @@ m = [l.strip() for l in sys.stdin]
 for tick in range(10):
     nm = []
     for y, row in enumerate(m):
-        nr = []
+        nr = ""
         for x, c in enumerate(row):
             a = adjecent(m, x, y)
             if c == ".":
                 if count(m, a, "|") >= 3:
-                    nr.append("|")
+                    nr += "|"
                 else:
-                    nr.append(".")
+                    nr += "."
             elif c == "|":
                 if count(m, a, "#") >= 3:
-                    nr.append("#")
+                    nr += "#"
                 else:
-                    nr.append("|")
+                    nr += "|"
             elif c == "#":
                 if count(m, a, "#") >= 1 and count(m, a, "|") >= 1:
-                    nr.append("#")
+                    nr += "#"
                 else:
-                    nr.append(".")
-        nm.append("".join(nr))
+                    nr += "."
+        nm.append(nr)
     m = nm
 
 print(val(m))
