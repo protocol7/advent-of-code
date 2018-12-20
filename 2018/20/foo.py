@@ -7,30 +7,22 @@ class Node():
         self.parent = parent
         self.c = {}
 
-def rev(d):
-    if d == "N":
-        return "S"
-    elif d == "S":
-        return "N"
-    elif d == "E":
-        return "W"
-    elif d == "W":
-        return "E"
+rev = {"N": "S", "S": "N", "W": "E", "E": "W"}
 
 def w(rr, start):
     node = start
     while rr:
         c = rr.pop(0)
-        if c == "(":
+        if c == "(" or c == "^":
             w(rr, node)
-        elif c ==")":
+        elif c ==")" or c == "$":
             return
         elif c == "|":
             node = start
         else:
             if node.c.get(c):
                 node = node.c[c]
-            elif node.parent and node.parent.c.get(rev(c)) == node:
+            elif node.parent and node.parent.c.get(rev[c]) == node:
                 node = node.parent
             else:
                 n = Node(node)
@@ -47,7 +39,7 @@ def l(node, doors, max_doors, rooms):
         rooms += 1
     return max_doors, rooms
 
-inp = sys.stdin.read().strip().strip("^").strip("$")
+inp = sys.stdin.read().strip()
 
 root = Node(None)
 
