@@ -90,12 +90,10 @@ while True:
         break
 
     op, a, b, c = instrs[ip]
-    oo = ops[op]
 
     reg[ipb] = ip
-    rr = reg[:]
 
-    oo(a, b, c, reg)
+    ops[op](a, b, c, reg)
 
     ip = reg[ipb]
     ip += 1

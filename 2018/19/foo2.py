@@ -121,7 +121,6 @@ while True:
                 reg[5] = product
 
     reg[ipb] = ip
-    rr = reg[:]
 
     oo(a, b, c, reg)
 
