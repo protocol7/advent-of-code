@@ -37,57 +37,6 @@ def w(rr, start):
                 node.c[c] = n
                 node = n
 
-def pp(node):
-    size = 1000
-    grid = []
-    for y in range(size):
-        grid.append([" " for x in range(size)])
-    p(node, grid, size//2, size//2)
-
-    # find bound
-    minx, miny, maxx, maxy = sys.maxint, sys.maxint, 0, 0
-    for y, row in enumerate(grid):
-        mi, ma = sys.maxint, 0
-        for x, c in enumerate(row):
-            if c != " ":
-                mi = min(mi, x)
-                ma = max(ma, x)
-        minx = min(minx, mi)
-        maxx = max(maxx, ma)
-        if ma != 0:
-            miny = min(miny, y)
-            maxy = max(maxy, y)
-
-    for y in range(miny-1, maxy+2):
-        row = ""
-        for x in range(minx-1, maxx+2):
-            if x == size//2 and y == size//2:
-                row += "X"
-            else:
-                c = grid[y][x]
-                if c == " ":
-                    row += "#"
-                else:
-                    row += c
-        print(row)
-
-def p(node, g, x, y):
-    g[y][x] = "."
-    for d in ["E", "W", "N", "S"]:
-        if node.c.get(d):
-            if d == "N":
-                g[y-1][x] = "-"
-                p(node.c[d], g, x, y-2)
-            elif d == "S":
-                g[y+1][x] = "-"
-                p(node.c[d], g, x, y+2)
-            elif d == "E":
-                g[y][x+1] = "|"
-                p(node.c[d], g, x+2, y)
-            elif d == "W":
-                g[y][x-1] = "|"
-                p(node.c[d], g, x-2, y)
-
 def l(node, doors, max_doors, rooms):
     max_doors = max(max_doors, doors)
     for child in node.c.itervalues():
@@ -103,8 +52,6 @@ inp = sys.stdin.read().strip().strip("^").strip("$")
 root = Node(None)
 
 w(list(inp), root)
-
-pp(root)
 
 max_doors, rooms = l(root, 0, 0, 0)
 print(max_doors, rooms)
