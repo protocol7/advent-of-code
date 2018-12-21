@@ -1,5 +1,3 @@
-r3, r4 = 0, 0
-
 r4 = 65536
 r3 = 7041048
 
@@ -23,6 +21,7 @@ while True:
 
     # gtir 256 4 5
     if 256 > r4:
+        print(r3)
         if r3 in seen:
             print(last_seen)
             break
