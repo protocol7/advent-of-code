@@ -6,9 +6,6 @@ def parse(line):
     exp = exp.split()
     return assigned, exp
 
-def isvalue(e):
-    return e.isdigit()
-
 def wrap(x):
     if x < 0:
         return 65536 + x
@@ -16,7 +13,7 @@ def wrap(x):
         return x
 
 def ev(e):
-    if isvalue(e):
+    if e.isdigit():
         return int(e)
     if e in cache:
         return cache[e]
