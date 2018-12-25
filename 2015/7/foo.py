@@ -1,9 +1,4 @@
 import sys
-from collections import defaultdict
-from itertools import chain, imap
-
-def flatmap(f, items):
-    return chain.from_iterable(imap(f, items))
 
 def parse(line):
     line = line.strip()
@@ -20,14 +15,12 @@ def wrap(x):
     else:
         return x
 
-cache = {}
 def ev(e):
-    global cache
     if isvalue(e):
         return int(e)
     if e in cache:
         return cache[e]
-    exp = parsed[e]
+    exp = wires[e]
     if len(exp) == 1:
         res = ev(exp[0])
     elif len(exp) == 2:
@@ -51,5 +44,6 @@ def ev(e):
     cache[e] = res
     return res
 
-parsed = {assigned:exp for assigned, exp in map(parse, sys.stdin)}
+cache = {}
+wires = {assigned:exp for assigned, exp in map(parse, sys.stdin)}
 print(ev("a"))
