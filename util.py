@@ -12,6 +12,7 @@ def manhattan(*args):
         ax, ay, bx, by = args
     return abs(ax - bx) + abs(ay - by)
 
+# graph is dict of node -> neighbours
 def exhaustive_bfs(graph, start):
     q = deque([start])
     levels = {start: 0}
@@ -28,6 +29,8 @@ def exhaustive_bfs(graph, start):
         level += 1
     return levels, parent
 
+# graph is dict of node -> neighbours
+# end is predicate function
 def bfs(graph, start, end):
     q = deque([[start]])
     seen = set()
