@@ -5,6 +5,9 @@ from heapq import heappush, heappop
 def flatmap(f, items):
     return chain.from_iterable(imap(f, items))
 
+def digit(number, n):
+    return number // 10**n % 10
+
 def manhattan(*args):
     if len(args) == 2:
         (ax, ay), (bx, by) = args
