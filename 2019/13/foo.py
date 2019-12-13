@@ -1,10 +1,5 @@
 import sys
-from collections import *
-from itertools import *
-from util import *
 from intcode import *
-
-
 
 prog = parse(sys.stdin)
 ic = Intcode(prog, [])
@@ -21,5 +16,5 @@ while True:
 
     if t == 2:
         ts += 1
-print(ts)
 
+print(ts)
