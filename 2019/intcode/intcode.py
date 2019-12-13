@@ -30,14 +30,13 @@ def digit(number, n):
     return number // 10**n % 10
 
 class Intcode:
-    def __init__(self, prog, inp=[]):
+    def __init__(self, prog, inp):
         self.prog = defaultdict(int)
         for i, p in enumerate(prog):
             self.prog[i] = p
 
         self.i = 0
-        self.input = inp[:]
-        self.input_iter = iter(self.input)
+        self.input = inp
         self.base = 0
 
     def run(self, debug=False):
@@ -85,7 +84,7 @@ class Intcode:
                 self.prog[c] = a * b
                 self.i += 4
             elif o == 3: #input
-                x = next(self.input_iter)
+                x = self.input()
                 a = params(0, 1)
                 self.prog[a] = x
                 self.i += 2

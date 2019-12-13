@@ -85,7 +85,6 @@ class Intcode:
                 self.i += 4
             elif o == 3: #input
                 x = self.input()
-                #print("input", x)
                 a = params(0, 1)
                 self.prog[a] = x
                 self.i += 2
