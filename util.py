@@ -1,4 +1,4 @@
-from collections import deque
+from collections import deque, defaultdict
 from itertools import chain, imap
 from heapq import heappush, heappop
 from re import findall
@@ -102,6 +102,37 @@ def top_sort(graph, start):
     return result
 
 adjacent = [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]
+
+# maze = [[0, 0], [0, 1]]
+# is_neighbour is a predicate to check if one can navigate from one node to
+# another
+# is_neighbour(current_coord, current_value, neighbour_coord, neighbour_value)
+# result in graph of dict of node -> neighbours
+def maze_to_graph(maze, start, is_neighbour):
+    q = [start]
+    seen = set([start])
+    g = defaultdict(list)
+    w = len(maze[0])
+    h = len(maze)
+
+    while q:
+        c = heappop(q)
+        cx, cy = c
+
+        for dx, dy in adjacent:
+            n = cx + dx, cy + dy
+            nx, ny = n
+
+            if nx < 0 or ny < 0 or nx >= w or ny >= h:
+                continue
+
+            if is_neighbour(c, maze[cy][cx], n, maze[ny][nx]):
+                g[c].append(n)
+
+                if n not in seen:
+                    heappush(q, n)
+                    seen.add(n)
+    return g
 
 # maze = [[0, 0], [0, 1]]
 def astar(maze, start, goal):

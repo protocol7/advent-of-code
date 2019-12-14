@@ -1,4 +1,5 @@
 from util import *
+from collections import *
 import unittest
 
 class Misc(unittest.TestCase):
@@ -65,6 +66,21 @@ class Misc(unittest.TestCase):
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
         self.assertEquals([(0, 0), (1, 1), (2, 2), (3, 3), (3, 4), (4, 5), (5, 4), (5, 3), (5, 2), (5, 1), (5, 0)], astar(maze, (0, 0), (5, 0)))
+
+    def test_maze_to_graph(self):
+        maze = [[0, 1, 0],
+                [0, 0, 0],
+                [0, 1, 0]]
+
+        self.assertEquals({
+            (0, 1): [(0, 0), (0, 2), (1, 1)],
+            (0, 0): [(0, 1), (1, 1)],
+            (2, 1): [(2, 0), (2, 2), (1, 1)],
+            (1, 1): [(0, 1), (2, 1), (0, 0), (0, 2), (2, 0), (2, 2)],
+            (2, 0): [(2, 1), (1, 1)],
+            (2, 2): [(2, 1), (1, 1)],
+            (0, 2): [(0, 1), (1, 1)]},
+            maze_to_graph(maze, (0, 0), lambda _, __, ___, x: not x))
 
 
 if __name__ == '__main__':
