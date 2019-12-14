@@ -157,3 +157,21 @@ def astar(graph, start, goal):
                 priority = cost + 1 + manhattan(n, goal)
                 heappush(q, (priority, path + [n]))
                 seen.add(n)
+
+# check(i), return True if i is too large
+# returns the largest value where check is false, and the smallest where check
+# is true (just to remembe to think about the one-off :)
+def binary_search(lo, hi, check):
+    blo = check(lo)
+    bhi = check(hi)
+    if blo == bhi:
+        assert False, "lo and hi both %s" % blo
+
+    while True:
+        x = (lo + hi) // 2
+        if check(x):
+            if not check(x-1):
+                return (x-1, x)
+            hi = x
+        else:
+            lo = x

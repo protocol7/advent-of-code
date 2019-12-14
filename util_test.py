@@ -82,6 +82,9 @@ class Misc(unittest.TestCase):
             (0, 2): [(0, 1), (1, 1)]},
             maze_to_graph(maze, (0, 0), lambda _, __, ___, x: not x))
 
+    def test_maze_to_graph(self):
+        self.assertEquals((123455, 123456), binary_search(0, 10000000, lambda x: x >= 123456))
+
 
 if __name__ == '__main__':
     unittest.main()
