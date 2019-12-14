@@ -82,6 +82,27 @@ def bfs(graph, start, end):
                 q.append(p)
                 seen.add(n)
 
+# return all paths between start and end
+# graph is dict of node -> neighbours
+# end is predicate function
+def bfs_all_paths(graph, start, end, cyclic=False):
+    q = deque([[start]])
+    paths = []
+
+    while q:
+        path = q.popleft()
+        v = path[-1]
+        for n in graph[v]:
+            if cyclic and n in path:
+                continue
+
+            p = path + [n]
+            if end(n):
+                paths.append(p)
+            else:
+                q.append(p)
+    return paths
+
 # give topological order of graph, starting at "start"
 # graph is dict of node -> neighbours
 # returns a list of nodes in topological order

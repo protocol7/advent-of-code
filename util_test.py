@@ -52,6 +52,17 @@ class Misc(unittest.TestCase):
         g = {'A': ['ORE'], 'C': ['B', 'A'], 'B': ['ORE'], 'E': ['D', 'A'], 'D': ['C', 'A'], 'FUEL': ['E', 'A']}
         self.assertEquals(['FUEL', 'A', 'ORE'], bfs(g, "FUEL", lambda x: x == "ORE"))
 
+    def test_bfs_all_paths(self):
+        g = {'A': ['ORE'], 'C': ['B', 'A'], 'B': ['ORE'], 'E': ['D', 'A'], 'D': ['C', 'A'], 'FUEL': ['E', 'A']}
+        self.assertEquals([
+            ['FUEL', 'A', 'ORE'],
+            ['FUEL', 'E', 'A', 'ORE'],
+            ['FUEL', 'E', 'D', 'A', 'ORE'],
+            ['FUEL', 'E', 'D', 'C', 'B', 'ORE'],
+            ['FUEL', 'E', 'D', 'C', 'A', 'ORE']
+            ],
+                bfs_all_paths(g, "FUEL", lambda x: x == "ORE"))
+
     def test_astar(self):
         maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
