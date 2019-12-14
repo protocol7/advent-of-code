@@ -52,7 +52,6 @@ class Misc(unittest.TestCase):
         g = {'A': ['ORE'], 'C': ['B', 'A'], 'B': ['ORE'], 'E': ['D', 'A'], 'D': ['C', 'A'], 'FUEL': ['E', 'A']}
         self.assertEquals(['FUEL', 'A', 'ORE'], bfs(g, "FUEL", lambda x: x == "ORE"))
 
-
     def test_astar(self):
         maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
@@ -64,8 +63,9 @@ class Misc(unittest.TestCase):
                 [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        graph = maze_to_graph(maze, (0, 0), lambda _, __, ___, x: not x)
 
-        self.assertEquals([(0, 0), (1, 1), (2, 2), (3, 3), (3, 4), (4, 5), (5, 4), (5, 3), (5, 2), (5, 1), (5, 0)], astar(maze, (0, 0), (5, 0)))
+        self.assertEquals([(0, 0), (1, 1), (2, 2), (3, 3), (3, 4), (4, 5), (5, 4), (5, 3), (5, 2), (5, 1), (5, 0)], astar(graph, (0, 0), (5, 0)))
 
     def test_maze_to_graph(self):
         maze = [[0, 1, 0],

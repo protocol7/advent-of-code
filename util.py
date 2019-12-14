@@ -108,6 +108,10 @@ adjacent = [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)
 # another
 # is_neighbour(current_coord, current_value, neighbour_coord, neighbour_value)
 # result in graph of dict of node -> neighbours
+#
+# Example, maze where false values are navigatable
+# maze_to_graph(maze, start, lambda _, __, ___, x: not x)
+#
 def maze_to_graph(maze, start, is_neighbour):
     q = [start]
     seen = set([start])
@@ -134,8 +138,10 @@ def maze_to_graph(maze, start, is_neighbour):
                     seen.add(n)
     return g
 
-# maze = [[0, 0], [0, 1]]
-def astar(maze, start, goal):
+# finds a path between start and goal
+# graph is dict of node -> neighbours
+# node and neighbours are (x, y) tuples, as is start and goal
+def astar(graph, start, goal):
     q = [(0, [start])]
     seen = set([start])
 
@@ -146,16 +152,8 @@ def astar(maze, start, goal):
         if c == goal:
             return path
 
-        cx, cy = c
-        for dx, dy in adjacent:
-            n = cx + dx, cy + dy
-            nx, ny = n
-
-            if nx < 0 or ny < 0 or nx >= len(maze[0]) or ny >= len(maze):
-                continue
-
-            if not maze[ny][nx]:
-                if n not in seen:
-                    priority = cost + 1 + manhattan(n, goal)
-                    heappush(q, (priority, path + [n]))
+        for n in graph[c]:
+            if n not in seen:
+                priority = cost + 1 + manhattan(n, goal)
+                heappush(q, (priority, path + [n]))
                 seen.add(n)
