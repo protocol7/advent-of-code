@@ -4,7 +4,7 @@ from heapq import heappush, heappop
 from re import findall
 
 def flatmap(f, items):
-    return chain.from_iterable(imap(f, items))
+    return list(chain.from_iterable(imap(f, items)))
 
 # get digit as position n from an int
 def digit(number, n):
@@ -39,7 +39,10 @@ def sign(i):
         return 0
 
 def manhattan(*args):
-    if len(args) == 2:
+    if len(args) == 1:
+        ax, ay = args[0]
+        bx, by = 0, 0
+    elif len(args) == 2:
         (ax, ay), (bx, by) = args
     elif len(args) == 4:
         ax, ay, bx, by = args
@@ -87,10 +90,11 @@ def top_sort(graph, start):
     seen = set()
 
     def visit(node):
-        for n in graph[node]:
-            if n not in seen:
-                seen.add(n)
-                visit(n)
+        if node in graph:
+            for n in graph[node]:
+                if n not in seen:
+                    seen.add(n)
+                    visit(n)
         result.insert(0, node) # on the return path, insert in inverse order
 
     visit(start)
