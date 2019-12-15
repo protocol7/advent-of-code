@@ -40,8 +40,12 @@ def sign(i):
         return 0
 
 # least common multiple
-def lcm(a, b):
-    return abs(a*b) // gcd(a, b)
+def lcm(*args):
+    if len(args) == 2:
+        a, b = args
+        return abs(a*b) // gcd(a, b)
+    elif len(args) > 2:
+        return reduce(lcm, args)
 
 def manhattan(*args):
     if len(args) == 1:
