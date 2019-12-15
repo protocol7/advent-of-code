@@ -151,10 +151,3 @@ class Intcode:
             print("%-5s: %s" % (row, s))
 
         raw_input("")
-
-if __name__ == "__main__":
-    #prog = parse(open("input.txt"))
-    prog = parse(sys.stdin)
-    ic = Intcode(prog, [])
-
-    print(ic.run())
