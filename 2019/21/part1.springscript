@@ -1,0 +1,13 @@
+# (!A|!B|!C) & D
+#
+# jump if there's a hole at A or B or C
+NOT A J
+NOT B T
+OR T J
+NOT C T
+OR T J
+
+# and D is ground
+AND D J
+
+WALK

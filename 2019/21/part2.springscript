@@ -1,0 +1,22 @@
+# (!A|!B|!C) & D & (E|H)
+
+# jump if there's a hole at A or B or C
+NOT A J
+NOT B T
+OR T J
+NOT C T
+OR T J
+
+# and D is ground
+AND D J
+
+# but only if we can make progress afterwards by either walking to E, or jumping to H
+# set T to E
+NOT E T
+OR E T
+AND E T
+# or H
+OR H T
+AND T J
+
+RUN
