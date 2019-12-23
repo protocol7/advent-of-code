@@ -7,6 +7,8 @@ nics = {}
 
 for i in range(50):
     q = []
+    # this variant of Intcode runs until it needs more input, and then exists
+    # with None
     ic = Intcode(prog)
     ic.run(i)
     nics[i] = (ic, q)
@@ -23,12 +25,14 @@ def run():
                 y = ic.run(None)
                 _, oq = nics[o]
                 oq.append((x, y))
+
+                # is it done?
                 o = ic.run(-1)
 
             # drain queue
             while q:
                 x, y = q.pop(0)
-                o = ic.run(x)
+                ic.run(x)
                 o = ic.run(y)
 
                 while o is not None:
@@ -41,6 +45,7 @@ def run():
                     _, oq = nics[o]
                     oq.append((x, y))
 
+                    # is it done?
                     o = ic.run(-1)
 
 print(run())
