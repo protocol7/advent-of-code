@@ -80,7 +80,7 @@ def tick(m, mu, md):
                     ll.append(".")
             else:
                 assert False
-        mm.append("".join(ll))
+        mm.append(ll)
     return tuple(mm)
 
 def ticks(ms):
