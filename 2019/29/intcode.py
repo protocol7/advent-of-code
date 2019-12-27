@@ -38,12 +38,15 @@ class Intcode:
         self.i = 0
         self.input = inp
         self.base = 0
+        self.ops = 0
 
     def run(self, debug=False):
         while True:
             start_prog = dict(self.prog)
             start_i = self.i
             op = self.prog[self.i]
+
+            self.ops += 1
 
             o = op % 100
             modes = [digit(op, x) for x in range(2, 5)]
