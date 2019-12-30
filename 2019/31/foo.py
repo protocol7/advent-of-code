@@ -291,6 +291,3 @@ while True:
         break
 
     print(o)
-
-
-
