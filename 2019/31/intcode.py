@@ -41,14 +41,14 @@ class Intcode:
 
     def run(self, debug=False):
         while True:
-            start_prog = dict(self.prog)
-            start_i = self.i
+            #start_prog = dict(self.prog)
+            #start_i = self.i
             op = self.prog[self.i]
 
             o = op % 100
             modes = [digit(op, x) for x in range(2, 5)]
 
-            used_params = []
+            #used_params = []
             def params(inn, out=0):
                 res = []
                 for u in range(inn):
@@ -72,7 +72,7 @@ class Intcode:
                     else:
                         assert False
 
-                used_params.extend(res)
+                #used_params.extend(res)
                 return res if len(res) > 1 else res[0]
 
             if o == 1: # add
@@ -122,8 +122,8 @@ class Intcode:
             else:
                 assert False, "unknown op %s" % o
 
-            if debug:
-                self.halt(start_prog, start_i, op, o, modes, used_params)
+            #if debug:
+            #    self.halt(start_prog, start_i, op, o, modes, used_params)
 
     def halt(self, start_prog, start_i, op, o, modes, used_params):
         print("op: %s, i: %s -> %s, modes: %s, params: %s, base: %s" % (opcode(o), start_i, self.i, modes, used_params, self.base))
