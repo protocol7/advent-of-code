@@ -36,9 +36,11 @@ def msplit(s, seps):
     p = 0
     for i, c in enumerate(s):
         if c in seps:
-            out.append(s[p:i])
+            if s[p:i]:
+                out.append(s[p:i])
             p = i + 1
-    out.append(s[p:])
+    if s[p:]:
+        out.append(s[p:])
     return out
 
 def ilen(iter):
@@ -71,6 +73,7 @@ def manhattan(*args):
     return abs(ax - bx) + abs(ay - by)
 
 # graph is dict of node -> neighbours
+# returns dict of node -> best level and dict of node -> best parent
 def exhaustive_bfs(graph, start):
     q = deque([start])
     levels = {start: 0}
@@ -89,6 +92,7 @@ def exhaustive_bfs(graph, start):
 
 # graph is dict of node -> neighbours
 # end is predicate function
+# returns path from start to end
 def bfs(graph, start, end):
     q = deque([[start]])
     seen = set()
@@ -107,6 +111,7 @@ def bfs(graph, start, end):
 # return all paths between start and end
 # graph is dict of node -> neighbours
 # end is predicate function
+# returns list of paths from start to end
 def bfs_all_paths(graph, start, end, cyclic=False):
     q = deque([[start]])
     paths = []

@@ -36,9 +36,11 @@ def msplit(s, seps):
     p = 0
     for i, c in enumerate(s):
         if c in seps:
-            out.append(s[p:i])
+            if s[p:i]:
+                out.append(s[p:i])
             p = i + 1
-    out.append(s[p:])
+    if s[p:]:
+        out.append(s[p:])
     return out
 
 def ilen(iter):

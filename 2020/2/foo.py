@@ -1,7 +1,7 @@
 import sys
 from util import *
 
-def f(a, b, c, _, p):
+def f(a, b, c, p):
     return a <= p.count(c) <= b
 
 ps = map(lambda l: intify(msplit(l, "-: ")), sys.stdin)

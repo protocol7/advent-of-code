@@ -41,6 +41,8 @@ class Misc(unittest.TestCase):
     def test_msplit(self):
         self.assertEqual(["1", "2", "3"], msplit("1-2 3", "- "))
         self.assertEqual(["1", "2 3"], msplit("1-2 3", "-"))
+        self.assertEqual(["1", "3"], msplit("1: 3", ": "))  # do not include empty substrings
+        self.assertEqual(["1", "3"], msplit("1 3:", ": "))  # do not include empty substrings at the end
 
     def test_manhattan(self):
         self.assertEqual(13, manhattan((5, 8)))
