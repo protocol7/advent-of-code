@@ -4,6 +4,6 @@ from itertools import *
 from util import *
 
 def parse(line):
-    pass
+    return line.strip()
 
-parsed = list(map(parse, sys.stdin))
+lines = list(map(parse, sys.stdin))
