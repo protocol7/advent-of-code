@@ -15,9 +15,6 @@ def digit(number, n):
 def chunks(xs, n):
     return [xs[i:i + n] for i in range(0, len(xs), n)]
 
-def pairs(xs):
-    return chunks(xs, n)
-
 # find all ints, including negative ones, in a string
 def ints(s):
     return list(map(int, findall(r"-?\d+", s)))
@@ -33,6 +30,9 @@ def isint(s):
 # make ints of everything that looks like one
 def intify(xs):
     return [int(x) if isint(x) else x for x in xs]
+
+def pairs(xs):
+    return [(xs[i], xs[i+1]) for i in range(0, len(xs), 2)]
 
 # split a string at any character in seps
 # returns list of strings, excluding any empty substrings
