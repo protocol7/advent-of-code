@@ -6,4 +6,4 @@ from util import *
 def parse(line):
     return line.strip()
 
-lines = list(map(parse, sys.stdin))
+xs = list(map(parse, sys.stdin))

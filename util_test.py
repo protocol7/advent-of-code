@@ -87,10 +87,54 @@ class Misc(unittest.TestCase):
 
         self.assertEqual([(0, 0), (1, 1), (2, 2), (3, 3), (3, 4), (4, 5), (5, 4), (5, 3), (5, 2), (5, 1), (5, 0)], astar(graph, (0, 0), (5, 0)))
 
+    def test_in_grid(self):
+        grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+        self.assertTrue(in_grid(grid, 0, 0))
+        self.assertTrue(in_grid(grid, 1, 1))
+        self.assertTrue(in_grid(grid, 1, 1))
+        self.assertTrue(in_grid(grid, 2, 2))
+
+        self.assertFalse(in_grid(grid, 0, -1))
+        self.assertFalse(in_grid(grid, -1, 0))
+        self.assertFalse(in_grid(grid, 3, 0))
+        self.assertFalse(in_grid(grid, 0, 3))
+
+    def test_iter_orthogonal(self):
+        grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+        self.assertEqual([(1, 0), (1, 2), (0, 1), (2, 1)], list(iter_orthogonal(1, 1)))
+        self.assertEqual([(1, 0), (1, 2), (0, 1), (2, 1)], list(iter_orthogonal(1, 1, grid)))
+
+        self.assertEqual( [(0, -1), (0, 1), (-1, 0), (1, 0)], list(iter_orthogonal(0, 0)))
+        self.assertEqual( [(0, 1), (1, 0)], list(iter_orthogonal(0, 0, grid)))
+
+    def test_iter_adjacent(self):
+        grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+        self.assertEqual([(1, 0), (1, 2), (0, 1), (2, 1), (0, 0), (0, 2), (2, 0), (2, 2)], list(iter_adjacent(1, 1)))
+        self.assertEqual([(1, 0), (1, 2), (0, 1), (2, 1), (0, 0), (0, 2), (2, 0), (2, 2)], list(iter_adjacent(1, 1, grid)))
+
+        self.assertEqual( [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)], list(iter_adjacent(0, 0)))
+        self.assertEqual( [(0, 1), (1, 0), (1, 1)], list(iter_adjacent(0, 0, grid)))
+
+    def test_grid_to_dict(self):
+        grid = [[1, 2], [3, 4]]
+
+        self.assertEqual({(0, 0): 1, (0, 1): 3, (1, 0): 2, (1, 1): 4}, grid_to_dict(grid))
+
+    def test_grid_get(self):
+        grid = [[1, 2], [3, 4]]
+
+        self.assertEqual(1, grid_get(grid, 0, 0))
+        self.assertEqual(4, grid_get(grid, 1, 1))
+        self.assertEqual(None, grid_get(grid, -1, 0))
+        self.assertEqual("foo", grid_get(grid, -1, 0, "foo"))
+
     def test_maze_to_graph(self):
-        maze = [[0, 1, 0],
-                [0, 0, 0],
-                [0, 1, 0]]
+        maze = [".#.",
+                "...",
+                ".#."]
 
         self.assertEqual({
             (0, 1): [(0, 0), (0, 2), (1, 1)],
@@ -100,9 +144,9 @@ class Misc(unittest.TestCase):
             (2, 0): [(2, 1), (1, 1)],
             (2, 2): [(2, 1), (1, 1)],
             (0, 2): [(0, 1), (1, 1)]},
-            maze_to_graph(maze, (0, 0), lambda _, __, ___, x: not x))
+            maze_to_graph(maze, (0, 0), lambda _, __, ___, x: x == "."))
 
-    def test_maze_to_graph(self):
+    def test_binary_search(self):
         self.assertEqual((123455, 123456), binary_search(0, 10000000, lambda x: x >= 123456))
 
 

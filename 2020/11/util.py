@@ -163,17 +163,15 @@ orthogonal = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 adjacent = [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]
 
 # iterator over orthogonal coords from x and y
-def iter_orthogonal(x, y, grid=None):
+def iter_orthogonal(x, y):
     for dx, dy in orthogonal:
-        xx = x + dx
-        yy = y + dy
-        if not grid or in_grid(grid, xx, yy):
-            yield xx, yy
+        yield x+dx, y+dy
 
 # iterator over adjacent coords from x and y
 # if grid (list of lists) is provided, only coords in bound of the grid will be returned
 def iter_adjacent(x, y, grid=None):
     for dx, dy in adjacent:
+
         xx = x + dx
         yy = y + dy
         if not grid or in_grid(grid, xx, yy):
@@ -194,7 +192,7 @@ def grid_get(grid, x, y, default=None):
 def grid_to_dict(grid):
     d = dict()
     for y, row in enumerate(grid):
-        for x, v in enumerate(row):
+        for x, v in enumerate(row.strip()):
             d[(x, y)] = v
     return d
 
@@ -218,8 +216,12 @@ def maze_to_graph(maze, start, is_neighbour):
         c = heappop(q)
         cx, cy = c
 
-        for nx, ny in iter_adjacent(cx, cy, maze):
-            n = nx, ny
+        for dx, dy in adjacent:
+            n = cx + dx, cy + dy
+            nx, ny = n
+
+            if nx < 0 or ny < 0 or nx >= w or ny >= h:
+                continue
 
             if is_neighbour(c, maze[cy][cx], n, maze[ny][nx]):
                 g[c].append(n)
