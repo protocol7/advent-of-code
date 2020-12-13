@@ -46,11 +46,9 @@ class Misc(unittest.TestCase):
 
     def test_manhattan(self):
         self.assertEqual(13, manhattan((5, 8)))
+        self.assertEqual(13, manhattan(5, 8))
         self.assertEqual(10, manhattan((1, 2), (5, 8)))
         self.assertEqual(10, manhattan(1, 2, 5, 8))
-
-    def test_lcm(self):
-        self.assertEqual(12, lcm(4, 6))
 
     def test_topsort(self):
         g = {'A': ['ORE'], 'C': ['B', 'A'], 'B': ['ORE'], 'E': ['D', 'A'], 'D': ['C', 'A'], 'FUEL': ['E', 'A']}
@@ -148,6 +146,16 @@ class Misc(unittest.TestCase):
 
     def test_binary_search(self):
         self.assertEqual((123455, 123456), binary_search(0, 10000000, lambda x: x >= 123456))
+
+    def test_lcm(self):
+        self.assertEqual(12, lcm(4, 6))
+
+    def test_chinese_remainder(self):
+        self.assertEqual(23, chinese_remainder([3, 5, 7], [2, 3, 2]))
+        self.assertEqual(4, chinese_remainder([2, 3], [0, 1]))
+
+    def test_mul_inv(self):
+        self.assertEqual(2, mul_inv(8, 3))
 
 
 if __name__ == '__main__':

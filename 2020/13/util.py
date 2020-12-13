@@ -288,8 +288,6 @@ def lcm(*args):
 # find the smallest number x, such that x % n = a for each n and a in nx, ax
 # ax thus is a list of mod remainders
 # note that remainders in ax should be negative
-#
-# Adapted from https://rosettacode.org/wiki/Chinese_remainder_theorem#Python_3.6
 def chinese_remainder(nx, ax):
     prod = product(nx)
 

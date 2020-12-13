@@ -2,7 +2,6 @@ from collections import deque, defaultdict
 from heapq import heappush, heappop
 from re import findall
 from itertools import chain
-from functools import reduce
 from math import gcd
 
 def flatmap(f, items):
@@ -52,7 +51,10 @@ def ilen(iter):
     return sum(1 for _ in iter)
 
 def product(xs):
-    return reduce(lambda a, b: a * b, xs)
+    p = 1
+    for x in xs:
+        p *= x
+    return p
 
 def sign(i):
     if i > 0:
@@ -62,7 +64,13 @@ def sign(i):
     else:
         return 0
 
-# Graphs/geometry
+# least common multiple
+def lcm(*args):
+    if len(args) == 2:
+        a, b = args
+        return abs(a*b) // gcd(a, b)
+    elif len(args) > 2:
+        return reduce(lcm, args)
 
 def manhattan(*args):
     if len(args) == 1:
@@ -274,47 +282,3 @@ class Memoize:
             self.memo[args] = self.f(*args)
         #Warning: You may wish to do a deepcopy here if returning objects
         return self.memo[args]
-
-# Maths
-
-# least common multiple
-def lcm(*args):
-    if len(args) == 2:
-        a, b = args
-        return abs(a*b) // gcd(a, b)
-    elif len(args) > 2:
-        return reduce(lcm, args)
-
-# find the smallest number x, such that x % n = a for each n and a in nx, ax
-# ax thus is a list of mod remainders
-# note that remainders in ax should be negative
-#
-# Adapted from https://rosettacode.org/wiki/Chinese_remainder_theorem#Python_3.6
-def chinese_remainder(nx, ax):
-    prod = product(nx)
-
-    s = 0
-    for n, a in zip(nx, ax):
-        p = prod // n
-
-        s += a * mul_inv(p, n) * p
-
-    return s % prod
-
-# return x, such that (a * x) % m == 1, 0 <= x <= m
-def mul_inv(a, m):
-    m0 = m
-    x0, x1 = 0, 1
-
-    if m == 1:
-        return 1
-
-    while a > 1:
-        q = a // m
-        a, m = m, a % m
-        x0, x1 = x1 - q * x0, x0
-
-    if x1 < 0:
-        x1 += m0
-
-    return x1
