@@ -32,6 +32,13 @@ class Misc(unittest.TestCase):
         self.assertEqual(5, digit(456, 1))
         self.assertEqual(6, digit(456, 0))
 
+    def test_binary(self):
+        self.assertEqual("1011", binary(11))
+        self.assertEqual("1011", binary("11"))
+
+        self.assertEqual("00001011", binary(11, 8))
+        self.assertEqual("00001011", binary("11", 8))
+
     def test_sign(self):
         self.assertEqual(1, sign(2))
         self.assertEqual(0, sign(0))
