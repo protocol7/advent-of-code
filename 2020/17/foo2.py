@@ -55,5 +55,4 @@ for cyc in range(6):
     sy += 1
     sx += 1
 
-
 print(sum(cs.values()))
