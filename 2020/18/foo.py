@@ -17,7 +17,6 @@ def eval(s):
     op = None
     while True:
         c = next(s, None)
-
         if c is None:
             break
         elif c.isdigit():

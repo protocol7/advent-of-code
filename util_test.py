@@ -51,6 +51,12 @@ class Misc(unittest.TestCase):
         self.assertEqual(["1", "3"], msplit("1: 3", ": "))  # do not include empty substrings
         self.assertEqual(["1", "3"], msplit("1 3:", ": "))  # do not include empty substrings at the end
 
+    def test_safe_remove(self):
+        self.assertEqual([1, 3], safe_remove(2, [1, 2, 3]))
+        self.assertEqual([1, 3], safe_remove(2, [1, 3]))
+        self.assertEqual(set([1, 3]), safe_remove(2, set([1, 2, 3])))
+        self.assertEqual(set([1, 3]), safe_remove(2, set([1, 3])))
+
     def test_manhattan(self):
         self.assertEqual(13, manhattan((5, 8)))
         self.assertEqual(13, manhattan(5, 8))
@@ -164,6 +170,8 @@ class Misc(unittest.TestCase):
     def test_mul_inv(self):
         self.assertEqual(2, mul_inv(8, 3))
 
+    def test_reduce_unique_options(self):
+        self.assertEqual({0: [1], 1: [2], 2: [3]}, reduce_unique_options({0: [1, 2, 3], 1: [2], 2: [2, 3]}))
 
 if __name__ == '__main__':
     unittest.main()
