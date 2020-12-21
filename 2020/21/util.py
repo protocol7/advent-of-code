@@ -268,6 +268,33 @@ def astar(graph, start, goal):
                 heappush(q, (priority, path + [n]))
                 seen.add(n)
 
+# returns all transpositions of a list of lists, that is, all rotations and mirrored versions
+# e.g. ["12", "34"] => [["12", "34"], ["21", "43"], ["34", "12"], ["43", "21"], ["13", "24"], ["31", "42"], ["24", "13"], ["42", "31"]]
+# if the input is a list of strings, a list of strings will be returned. same for tuples
+def transpositions(xs):
+    ts = []
+    # rows
+    for ystep in [1, -1]:
+        for xstep in [1, -1]:
+            ts.append([row[::xstep] for row in xs[::ystep]])
+
+    is_strings = type(xs[0]) == str
+    is_tuples = type(xs[0]) == tuple
+    # columns
+    for ystep in [1, -1]:
+        for xstep in [1, -1]:
+            out = []
+            for cols in list(zip(*xs))[::ystep]:
+                cols = cols[::xstep]
+                if is_strings:
+                    cols = "".join(cols)
+                elif is_tuples:
+                    cols = tuple(cols)
+                out.append(cols)
+            ts.append(out)
+
+    return ts
+
 # check(i), return True if i is too large
 # returns the largest value where check is false, and the smallest where check
 # is true (just to remember to think about the one-off :)
@@ -359,9 +386,7 @@ def mul_inv(a, m):
 #
 # keys can be any value
 #
-# this function assumes that all options can be trivially assigned. if that's not the case, look at max_bipartite_matching below.
-#
-# keeping this one around since it might be easier to reason about or to modify
+# this function assumes that all options can be trivially assigned. if that's not the case, look at max_bipartite_matching below
 def reduce_unique_options(d):
     def car(xs):
         return next(iter(xs))
@@ -386,9 +411,9 @@ def reduce_unique_options(d):
     return {k:car(v) for k, v in d.items()}
 
 # max bipartite matching
-# takes a graph of thing => possible options and find the best matching of each thing => option
+# takes a graph of thing => possible options and find the best matching of ech thing => option
 # this code uses an example of job applicants => open jobs, and returns the best matching of applicant => job
-# if an applicant can't be assigned to a job, it will not be included in the output
+# if an applicant can't be assigned to a job, it will be missing in the output
 #
 # based on https://www.geeksforgeeks.org/maximum-bipartite-matching/
 def max_bipartite_matching(graph):
@@ -400,13 +425,14 @@ def max_bipartite_matching(graph):
 
         # Try every job one by one
         for job in jobs:
-            # if applicant is interested in job and job is not seen
+            # if applicant u is interested in job and job is not seen
             if job in graph[applicant] and job not in seen:
-                # mark job as seen
+                # mark job as visited
                 seen.add(job)
 
                 # if job is not assigned to an applicant OR previously assigned applicant for job has an alternate job available.
-                # since job is marked as seen in the above line, assignments[job] in the following recursive call will not get job again
+                # since job is marked as seen in the above line, assignments[job] in the following
+                # recursive call will not get job again
                 if job not in assignments or bpm(assignments[job], assignments, seen):
                     assignments[job] = applicant
                     return True
@@ -423,6 +449,5 @@ def max_bipartite_matching(graph):
         # try to assign a job to the applicant
         bpm(applicant, assignments, seen)
 
-    # find it easier to get the result in the same way as the input,
-    # so return a dict of who gets assigned to which job by inversing the assignments
+    # return a dict of who gets assigned to which job, so inverse the dict
     return {v:k for k, v in assignments.items()}

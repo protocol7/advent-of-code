@@ -171,7 +171,22 @@ class Misc(unittest.TestCase):
         self.assertEqual(2, mul_inv(8, 3))
 
     def test_reduce_unique_options(self):
-        self.assertEqual({0: [1], 1: [2], 2: [3]}, reduce_unique_options({0: [1, 2, 3], 1: [2], 2: [2, 3]}))
+        self.assertEqual({0: 1, 1: 2, 2: 3}, reduce_unique_options({0: [1, 2, 3], 1: [2], 2: [2, 3]}))
+        self.assertEqual({0: 1, 1: 2, 2: 3}, reduce_unique_options({0: {1, 2, 3}, 1: {2}, 2: {2, 3}}))
+
+    def test_max_bipartite_matching(self):
+
+        self.assertEqual({0: 1, 2: 0, 3: 2, 4: 3, 5: 5}, max_bipartite_matching({0: [1, 2], 1: [], 2: [0, 3], 3: [2], 4: [3, 4], 5: [5]}))
+
+        # trival example where not all applicants can be assigned a job
+        self.assertEqual({0: 1}, max_bipartite_matching({0: [1], 1: [1]}))
+
+        # for trivial cases, max_bipartite_matching and reduce_unique_options should give the same result
+        graph = {0: [1, 2, 3], 1: [2], 2: [2, 3]}
+        expected = {0: 1, 1: 2, 2: 3}
+        self.assertEqual(expected, max_bipartite_matching(graph))
+        self.assertEqual(expected, reduce_unique_options(graph))
+
 
 if __name__ == '__main__':
     unittest.main()
