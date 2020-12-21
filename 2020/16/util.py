@@ -4,7 +4,7 @@ from heapq import heappush, heappop
 from re import findall
 from itertools import chain
 from functools import reduce
-from math import gcd, prod
+from math import gcd
 
 def flatmap(f, items):
     return list(chain.from_iterable(map(f, items)))
@@ -75,7 +75,7 @@ def safe_remove(v, xs):
     return xs
 
 def product(xs):
-    return prod(xs)
+    return reduce(lambda a, b: a * b, xs)
 
 def sign(i):
     if i > 0:
@@ -268,6 +268,33 @@ def astar(graph, start, goal):
                 heappush(q, (priority, path + [n]))
                 seen.add(n)
 
+# returns all transpositions of a list of lists, that is, all rotations and mirrored versions
+# e.g. ["12", "34"] => [["12", "34"], ["21", "43"], ["34", "12"], ["43", "21"], ["13", "24"], ["31", "42"], ["24", "13"], ["42", "31"]]
+# if the input is a list of strings, a list of strings will be returned. same for tuples
+def transpositions(xs):
+    ts = []
+    # rows
+    for ystep in [1, -1]:
+        for xstep in [1, -1]:
+            ts.append([row[::xstep] for row in xs[::ystep]])
+
+    is_strings = type(xs[0]) == str
+    is_tuples = type(xs[0]) == tuple
+    # columns
+    for ystep in [1, -1]:
+        for xstep in [1, -1]:
+            out = []
+            for cols in list(zip(*xs))[::ystep]:
+                cols = cols[::xstep]
+                if is_strings:
+                    cols = "".join(cols)
+                elif is_tuples:
+                    cols = tuple(cols)
+                out.append(cols)
+            ts.append(out)
+
+    return ts
+
 # check(i), return True if i is too large
 # returns the largest value where check is false, and the smallest where check
 # is true (just to remember to think about the one-off :)
@@ -352,16 +379,12 @@ def mul_inv(a, m):
 #
 # will give:
 # {
-#   0: 1,
-#   1: 2,
-#   2: 3
+#   0: [1],
+#   1: [2],
+#   2: [2]
 # }
 #
 # keys can be any value
-#
-# this function assumes that all options can be trivially assigned. if that's not the case, look at max_bipartite_matching below.
-#
-# keeping this one around since it might be easier to reason about or to modify
 def reduce_unique_options(d):
     def car(xs):
         return next(iter(xs))
@@ -384,42 +407,3 @@ def reduce_unique_options(d):
                         d[k] = safe_remove(vvv, vv)
 
     return {k:car(v) for k, v in d.items()}
-
-# max bipartite matching
-# takes a graph of thing => possible options and find the best matching of each thing => option
-# this code uses an example of job applicants => open jobs, and returns the best matching of applicant => job
-# if an applicant can't be assigned to a job, it will not be included in the output
-#
-# based on https://www.geeksforgeeks.org/maximum-bipartite-matching/
-def max_bipartite_matching(graph):
-
-    jobs = set.union(*[set(v) for v in graph.values()])
-
-    # a dict of job => applicant, to keep track of the applicants assigned to jobs
-    assignments = dict()
-
-    # a DFS based recursive function that returns true if an assignment for job is possible
-    def bpm(applicant, seen=set()):
-
-        # Try every job one by one, except those already seen
-        for job in jobs - seen:
-            # if applicant is interested in job
-            if job in graph[applicant]:
-                # mark job as seen
-                seen.add(job)
-
-                # if job is not assigned to an applicant OR previously assigned applicant for job has an alternate job available.
-                # since job is marked as seen in the above line, assignments[job] in the following recursive call will not get job again
-                if job not in assignments or bpm(assignments[job], seen):
-                    assignments[job] = applicant
-                    return True
-        return False
-
-    # for each applicant
-    for applicant in graph.keys():
-        # try to assign a job to the applicant
-        bpm(applicant)
-
-    # find it easier to get the result in the same way as the input,
-    # so return a dict of who gets assigned to which job by inversing the assignments
-    return {v:k for k, v in assignments.items()}
