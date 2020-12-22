@@ -271,18 +271,22 @@ def astar(graph, start, goal):
 # returns all transpositions of a list of lists, that is, all rotations and mirrored versions
 # e.g. ["12", "34"] => [["12", "34"], ["21", "43"], ["34", "12"], ["43", "21"], ["13", "24"], ["31", "42"], ["24", "13"], ["42", "31"]]
 # if the input is a list of strings, a list of strings will be returned. same for tuples
-def transpositions(xs):
+def transpositions(xs, mirror=True):
     ts = []
     # rows
-    for ystep in [1, -1]:
-        for xstep in [1, -1]:
+    if mirror:
+        steps = [1, -1]
+    else:
+        steps = [1]
+    for ystep in steps:
+        for xstep in steps:
             ts.append([row[::xstep] for row in xs[::ystep]])
 
     is_strings = type(xs[0]) == str
     is_tuples = type(xs[0]) == tuple
     # columns
-    for ystep in [1, -1]:
-        for xstep in [1, -1]:
+    for ystep in steps:
+        for xstep in steps:
             out = []
             for cols in list(zip(*xs))[::ystep]:
                 cols = cols[::xstep]
