@@ -1,71 +1,30 @@
 import sys
-from collections import *
-from itertools import *
 from util import *
 
 xs = sys.stdin.read().split("\n\n")
 
-d = dict()
-
+trans = dict()
 for x in xs:
     x = x.split()
-
     a = int(x[1][:-1])
-
-    b = x[2:]
-
-    d[a] = b
-
-def edge(x):
-    es = []
-
-    # top
-    es.append(x[0])
-    es.append("".join(reversed(x[0])))
-
-    # bottom
-    es.append(x[-1])
-    es.append("".join(reversed(x[-1])))
-
-    # left
-    s = ""
-    for xx in x:
-        s += xx[0]
-    es.append(s)
-    es.append("".join(reversed(s)))
-
-    # right
-    s = ""
-    for xx in x:
-        s += xx[-1]
-    es.append(s)
-    es.append("".join(reversed(s)))
-
-    return es
-
-edges = dict()
-for k, v in d.items():
-    e = edge(v)
-    edges[k] = e
-
-    print(e)
+    trans[a] = list(transpositions(x[2:]))
 
 p = 1
-
-for k, v in edges.items():
-
-    ms = 0
-    for e in v:
-        for kk, vv in edges.items():
+# check each tile for how many edges it matches with other tiles
+for k, v in trans.items():
+    c = 0
+    for t in v:
+        for kk, vv in trans.items():
             if k == kk:
                 continue
 
-            for ee in vv:
-                if e == ee:
-                    # print(e, ee, k, kk)
-                    ms += 1
+            for tt in vv:
+                # check if top edge is same
+                if t[0] == tt[0]:
+                    c += 1
 
-    if ms == 4:
+    # corners will match two other tiles, in two mirrors each
+    if c == 4:
         p *= k
 
 print(p)
