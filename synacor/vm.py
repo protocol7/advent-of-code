@@ -152,9 +152,6 @@ take mirror
 use mirror
 """
 
-# UwdiYuvVYIIV
-# VIIYVvUYibwU # mirrored
-
 ff = open("trace.txt", "w")
 
 def trace(ip, op, reg, *args):
