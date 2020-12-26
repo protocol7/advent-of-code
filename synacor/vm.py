@@ -15,8 +15,6 @@ for i in range(0, len(data), 2):
 
     mem[i//2] = x
 
-ip = 0
-
 def read(x):
     if 0 <= x <= 32767:
         return x
@@ -255,6 +253,7 @@ def disassemble():
                 ip += 1
 
 
+ip = 0
 while True:
     op = mem[ip]
 
