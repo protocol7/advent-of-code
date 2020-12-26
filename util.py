@@ -450,3 +450,26 @@ def max_bipartite_matching(graph):
     # find it easier to get the result in the same way as the input,
     # so return a dict of who gets assigned to which job by inversing the assignments
     return {v:k for k, v in assignments.items()}
+
+# hex stuff
+# https://www.redblobgames.com/grids/hexagons/#coordinates-cube
+
+# hex adjecent 3D cubes with east-west orientation
+hex_adjacent_ew = {
+    "e": (1, 0, -1),
+    "w": (-1, 0, 1),
+    "se": (0, 1, -1),
+    "nw": (0, -1, 1),
+    "ne": (1, -1, 0),
+    "sw": (-1, 1, 0)
+}
+
+# hex adjecent 3D cubes with north-south orientation
+hex_adjacent_ns = {
+    "n": (0, -1, 1),
+    "s": (0, 1, -1),
+    "se": (1, 0, -1),
+    "nw": (-1, 0, 1),
+    "ne": (1, -1, 0),
+    "sw": (-1, 1, 0)
+}
