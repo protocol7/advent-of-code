@@ -33,7 +33,7 @@ def read(x):
 def reg(x):
     return x - 32768
 
-# walk around the cake and pick up items
+# walk around the cave and pick up items
 inp = """
 take tablet
 doorway
