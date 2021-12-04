@@ -51,6 +51,9 @@ class Misc(unittest.TestCase):
         self.assertEqual(["1", "3"], msplit("1: 3", ": "))  # do not include empty substrings
         self.assertEqual(["1", "3"], msplit("1 3:", ": "))  # do not include empty substrings at the end
 
+    def test_flatten(self):
+        self.assertEqual([1, 2, 3, 4, 5, 6, 7, 8, 9], flatten([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
+
     def test_safe_remove(self):
         self.assertEqual([1, 3], safe_remove(2, [1, 2, 3]))
         self.assertEqual([1, 3], safe_remove(2, [1, 3]))
@@ -97,6 +100,9 @@ class Misc(unittest.TestCase):
         graph = maze_to_graph(maze, (0, 0), lambda _, __, ___, x: not x)
 
         self.assertEqual([(0, 0), (1, 1), (2, 2), (3, 3), (3, 4), (4, 5), (5, 4), (5, 3), (5, 2), (5, 1), (5, 0)], astar(graph, (0, 0), (5, 0)))
+
+    def test_transpose(self):
+        self.assertEqual([[1, 4, 7], [2, 5, 8], [3, 6, 9]], transpose([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
 
     def test_transpositions(self):
         self.assertEqual(set([("12", "34"),
