@@ -5,6 +5,7 @@ ls = sys.stdin.read().split("\n\n")
 
 ns = intify(ls[0].split(","))
 
+# parse boards
 bs = []
 for x in ls[1:]:
     b = [intify(f.split()) for f in x.strip().split("\n")]
