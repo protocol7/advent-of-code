@@ -66,6 +66,14 @@ class Misc(unittest.TestCase):
         self.assertEqual(10, manhattan((1, 2), (5, 8)))
         self.assertEqual(10, manhattan(1, 2, 5, 8))
 
+    def test_line_intersection(self):
+        self.assertEqual((5, 5), line_intersection(((0, 0), (10, 10)), ((10, 0), (0, 10))))
+        self.assertEqual((5, 5), line_intersection(((10, 0), (0, 10)), ((0, 0), (10, 10))))
+        self.assertEqual((5, 5), line_intersection(((5, 0), (5, 10)), ((0, 5), (10, 5))))
+
+        with self.assertRaises(Exception):
+            line_intersection(((0, 0), (10, 0)), ((0, 5), (10, 5)))
+
     def test_topsort(self):
         g = {'A': ['ORE'], 'C': ['B', 'A'], 'B': ['ORE'], 'E': ['D', 'A'], 'D': ['C', 'A'], 'FUEL': ['E', 'A']}
         self.assertEqual(['FUEL', 'E', 'D', 'C', 'A', 'B', 'ORE'], top_sort(g, "FUEL"))

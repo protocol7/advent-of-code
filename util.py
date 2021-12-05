@@ -105,6 +105,30 @@ def manhattan(*args):
         ax, ay, bx, by = args
     return abs(ax - bx) + abs(ay - by)
 
+
+# Find the intersection of two lines, e.g.
+# line_intersection(((0, 0), (10, 10)), ((10, 0), (0, 10))) -> (5, 5)
+#
+# If lines don't intersect, an exception is raised
+def line_intersection(l1, l2):
+    (x0, y0), (x1, y1) = l1
+    (x2, y2), (x3, y3) = l2
+
+    xdiff = (x0 - x1, x2 - x3)
+    ydiff = (y0 - y1, y2 - y3)
+
+    def det(a, b):
+        return a[0] * b[1] - a[1] * b[0]
+
+    div = det(xdiff, ydiff)
+    if div == 0:
+       raise Exception("lines do not intersect")
+
+    d = (det(*l1), det(*l2))
+    x = det(d, xdiff) / div
+    y = det(d, ydiff) / div
+    return x, y
+
 # graph is dict of node -> neighbours
 # returns dict of node -> best level and dict of node -> best parent
 def exhaustive_bfs(graph, start):
