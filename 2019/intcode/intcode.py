@@ -2,7 +2,7 @@ import sys
 from collections import defaultdict
 
 def parse(f):
-    return map(int, f.read().strip().split(","))[:]
+    return list(map(int, f.read().strip().split(",")))[:]
 
 def opcode(i):
     if i == 1:
@@ -41,12 +41,17 @@ class Intcode:
 
     def run(self, debug=False):
         while True:
+            
             start_prog = dict(self.prog)
             start_i = self.i
             op = self.prog[self.i]
 
             o = op % 100
             modes = [digit(op, x) for x in range(2, 5)]
+
+            #print(self.i, o)
+            #if o != 99:
+            #    print(opcode(o))
 
             used_params = []
             def params(inn, out=0):
@@ -151,3 +156,20 @@ class Intcode:
             print("%-5s: %s" % (row, s))
 
         raw_input("")
+
+if __name__ == '__main__':
+    with open(sys.argv[1]) as f:
+        prog = parse(f)
+
+        def inp():
+            x = input("Input: ")
+            return int(x.strip())
+
+
+        ic = Intcode(prog, inp)
+
+        while True:
+            o = ic.run()
+            if o is None:
+                break
+            print(o)
