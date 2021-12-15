@@ -94,6 +94,19 @@ class Misc(unittest.TestCase):
             ],
                 bfs_all_paths(g, "FUEL", lambda x: x == "ORE"))
 
+    def test_dijkstra(self):
+        graph = {
+            "start": {"A": 2, "B": 1},
+            "A": {"B": 1, "C": 2},
+            "B": {"C": 5},
+            "C": {"end": 1},
+        }
+
+        p, c = dijkstra(graph, "start", "end")
+
+        self.assertEqual(['start', 'A', 'C', 'end'], p)
+        self.assertEqual(5, c)
+
     def test_astar(self):
         maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
