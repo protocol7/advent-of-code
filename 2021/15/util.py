@@ -303,18 +303,19 @@ def dijkstra(graph, start, end):
     q = [(0, [start])]
 
     while q:
-        c, p = heappop(q)
-        v = p[-1]
+        cost, path = heappop(q)
+        node = path[-1]
 
-        if v == end:
-            return p, c
+        if node == end:
+            return path, cost
 
-        for n, dc in graph[v].items():
-            nc = c + dc
-            if nc < best[n]:
-                best[n] = nc
+        for neighbour, neighbour_cost in graph[node].items():
+            nc = cost + neighbour_cost
 
-                heappush(q, (nc, p + [n]))
+            if nc < best[neighbour]:
+                best[neighbour] = nc
+
+                heappush(q, (nc, path + [neighbour]))
 
 # finds a path between start and goal
 # graph is dict of node -> neighbours

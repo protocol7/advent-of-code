@@ -17,8 +17,7 @@ def expand(g):
             for c in g[cy % len(g)]:
                 cc = c + cx + cy // len(g)
 
-                if cc > 9:
-                    cc = cc % 9
+                cc = (cc - 1) % 9 + 1
 
                 dg.append(cc)
 
