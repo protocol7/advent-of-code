@@ -1,0 +1,1 @@
+print(sum(x for x in range(1001) if x != 588))
