@@ -240,7 +240,9 @@ def iter_neighbours(neighbours, x, y, grid=None):
     for dx, dy in neighbours:
         xx = x + dx
         yy = y + dy
-        if not grid or in_grid(grid, xx, yy):
+        if grid and in_grid(grid, xx, yy):
+            yield xx, yy, grid[yy][xx]    
+        elif not grid:
             yield xx, yy
 
 # check if coordinate is in grid. grid is list of lists
@@ -282,7 +284,7 @@ def maze_to_graph(maze, start, is_neighbour):
         c = heappop(q)
         cx, cy = c
 
-        for nx, ny in iter_adjacent(cx, cy, maze):
+        for nx, ny, _ in iter_adjacent(cx, cy, maze):
             n = nx, ny
 
             if is_neighbour(c, maze[cy][cx], n, maze[ny][nx]):
@@ -336,6 +338,45 @@ def astar(graph, start, goal):
                 priority = cost + 1 + manhattan(n, goal)
                 heappush(q, (priority, path + [n]))
                 seen.add(n)
+
+# flood fills neighbours in a grid starting from x and y and until the boundary condition is met
+# returns the number of cells that was filled
+#
+# For example, using the grid:
+# 0 0 1
+# 0 1 0
+# 1 0 0
+#
+# flood_fill(xs, 0, 0, lambda c: c == 1, 2)
+#
+# will result in
+# 2 2 1
+# 2 1 0
+# 1 0 0
+#
+# and return 3
+def flood_fill(xs, x ,y, boundary, fill_value, neighbours=orthogonal):
+    # check that we are in the grid
+    if x < 0 or x >= len(xs[0]) or y < 0 or y >= len(xs):
+        return 0
+
+    # check if we are on the boundary
+    if boundary(xs[y][x]):
+        return 0
+
+    # check if we are already filled
+    if xs[y][x] == fill_value:
+        return 0
+
+    # fill
+    xs[y][x] = fill_value
+    s = 1
+
+    # attempt to fill the neighboring positions
+    for dx, dy in neighbours:
+        s += flood_fill(xs, x + dx, y + dy, boundary, fill_value)
+
+    return s
 
 # transposes a list of lists, e.g. [[1, 2, 3], [4, 5, 6], [7, 8, 9]] -> [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
 def transpose(xs):

@@ -122,6 +122,14 @@ class Misc(unittest.TestCase):
 
         self.assertEqual([(0, 0), (1, 1), (2, 2), (3, 3), (3, 4), (4, 5), (5, 4), (5, 3), (5, 2), (5, 1), (5, 0)], astar(graph, (0, 0), (5, 0)))
 
+    def test_flood_fill(self):
+        xs = [[0, 0, 1], [0, 1, 0], [1, 0, 0]]
+
+        s = flood_fill(xs, 0, 0, lambda c: c == 1, 2)
+
+        self.assertEqual(3, s)
+
+
     def test_transpose(self):
         self.assertEqual([[1, 4, 7], [2, 5, 8], [3, 6, 9]], transpose([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
 
@@ -168,23 +176,28 @@ class Misc(unittest.TestCase):
         self.assertFalse(in_grid(grid, 3, 0))
         self.assertFalse(in_grid(grid, 0, 3))
 
-    def test_iter_orthogonal(self):
+    def test_grid(self):
         grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+        #self.assertEqual([(1, 0), (1, 2), (0, 1), (2, 1)], list(iter_grid(grid)))
+
+    def test_iter_orthogonal(self):
+        grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
         self.assertEqual([(1, 0), (1, 2), (0, 1), (2, 1)], list(iter_orthogonal(1, 1)))
-        self.assertEqual([(1, 0), (1, 2), (0, 1), (2, 1)], list(iter_orthogonal(1, 1, grid)))
+        self.assertEqual([(1, 0, 2), (1, 2, 8), (0, 1, 4), (2, 1, 6)], list(iter_orthogonal(1, 1, grid)))
 
         self.assertEqual( [(0, -1), (0, 1), (-1, 0), (1, 0)], list(iter_orthogonal(0, 0)))
-        self.assertEqual( [(0, 1), (1, 0)], list(iter_orthogonal(0, 0, grid)))
+        self.assertEqual( [(0, 1, 4), (1, 0, 2)], list(iter_orthogonal(0, 0, grid)))
 
     def test_iter_adjacent(self):
-        grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
         self.assertEqual([(1, 0), (1, 2), (0, 1), (2, 1), (0, 0), (0, 2), (2, 0), (2, 2)], list(iter_adjacent(1, 1)))
-        self.assertEqual([(1, 0), (1, 2), (0, 1), (2, 1), (0, 0), (0, 2), (2, 0), (2, 2)], list(iter_adjacent(1, 1, grid)))
+        self.assertEqual([(1, 0, 2), (1, 2, 8), (0, 1, 4), (2, 1, 6), (0, 0, 1), (0, 2, 7), (2, 0, 3), (2, 2, 9)], list(iter_adjacent(1, 1, grid)))
 
         self.assertEqual( [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)], list(iter_adjacent(0, 0)))
-        self.assertEqual( [(0, 1), (1, 0), (1, 1)], list(iter_adjacent(0, 0, grid)))
+        self.assertEqual( [(0, 1, 4), (1, 0, 2), (1, 1, 5)], list(iter_adjacent(0, 0, grid)))
 
     def test_grid_to_dict(self):
         grid = [[1, 2], [3, 4]]
