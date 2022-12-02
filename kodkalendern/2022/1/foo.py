@@ -1,0 +1,1 @@
+print(sum(range(67, 96)) - sum(range(48, 64)))

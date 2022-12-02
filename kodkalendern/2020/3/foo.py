@@ -1,0 +1,1 @@
+print(int(prod(range(1, 101)) / prod(range(2, 165, 2)) + 0.5))
