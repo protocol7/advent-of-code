@@ -617,19 +617,17 @@ class Span:
     # does this span fully contain either an integer or another span?
     def __contains__(self, other):
         if type(other) == int:
-            return other >= self.start and other <= self.end
+            return self.start <= other <= self.end
         elif type(other) == Span:
             return other.start >= self.start and other.end <= self.end
 
-    # does this span equal another span?
+    # does this span equal the other span?
     def __eq__(self, other):
         return self.start == other.start and self.end == other.end
 
     # does this span intersect/overlap the other span?
     def intersects(self, other):
-        return (self.start >= other.start and self.start <= other.end) \
-            or (self.end >= other.start and self.end <= other.end) \
-            or self in other or other in self
+        return other.start in self or other.end in self or self.start in other or self.end in other
 
     # get the intersection of two span, e.g. 1..12 & 0..3 -> 1..3
     # returns None if the spans do not intersect
@@ -651,9 +649,11 @@ class Span:
     def __len__(self):
         return self.end - self.start + 1
 
+    # get the span as a range
     def range(self):
         return range(self.start, self.end + 1)
 
+    # get the span as a set of integers
     def set(self):
         return set(self.range())
 
