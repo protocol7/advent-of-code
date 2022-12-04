@@ -20,6 +20,7 @@ class Misc(unittest.TestCase):
 
     def test_ints(self):
         self.assertEqual([123, -345], ints("> abc 123 => -345, def"))
+        self.assertEqual([123, 345], ints("> abc 123 => -345, def", negatives=False))
 
     def test_initify(self):
         self.assertEqual(["abc", 123, -345, "def"], intify(["abc", "123", "-345", "def"]))
@@ -257,6 +258,60 @@ class Misc(unittest.TestCase):
         self.assertEqual(expected, max_bipartite_matching(graph))
         self.assertEqual(expected, reduce_unique_options(graph))
 
+    def test_span(self):
+        span = Span(1, 12)
+
+        with self.assertRaises(Exception):
+            Span(2, 1)
+
+        self.assertIn(1, span)
+        self.assertIn(12, span)
+        self.assertIn(6, span)
+        self.assertNotIn(0, span)
+        self.assertNotIn(13, span)
+
+        span2 = Span(2, 11)
+        self.assertIn(span2, span)
+        self.assertIn(span, span)
+        self.assertNotIn(span, span2)
+
+        self.assertEqual(span & Span(0, 3), Span(1, 3))
+        self.assertEqual(span & Span(10, 13), Span(10, 12))
+
+        self.assertTrue(span.intersects(span))
+        self.assertTrue(span.intersects(Span(3, 4)))
+        self.assertTrue(Span(3, 4).intersects(span))
+        self.assertTrue(span.intersects(Span(1, 1)))
+        self.assertTrue(Span(1, 1).intersects(span))
+        self.assertTrue(span.intersects(Span(12, 12)))
+        self.assertTrue(Span(12, 12).intersects(span))
+        self.assertFalse(Span(13, 15).intersects(span))
+        self.assertFalse(span.intersects(Span(13, 15)))
+
+        self.assertEqual(span & Span(3, 4), Span(3, 4))
+        self.assertEqual(span & Span(0, 14), Span(1, 12))
+        self.assertEqual(span & Span(0, 1), Span(1, 1))
+        self.assertEqual(span & Span(1, 1), Span(1, 1))
+        self.assertEqual(span & Span(12, 14), Span(12, 12))
+        self.assertEqual(span & Span(12, 12), Span(12, 12))
+        self.assertIsNone(span & Span(13, 15))
+
+        self.assertEqual(span | Span(0, 3), Span(0, 12))
+        self.assertEqual(span | Span(0, 1), Span(0, 12))
+        self.assertEqual(span | Span(11, 13), Span(1, 13))
+        self.assertEqual(span | Span(12, 13), Span(1, 13))
+        self.assertIsNone(span | Span(13, 15))
+
+        self.assertEqual(span.range(), range(1, 13))
+        self.assertEqual(span.set(), {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})
+
+        self.assertTrue(span)
+        self.assertTrue(Span(1, 1))
+
+        self.assertEqual(len(Span(1, 1)), 1)
+        self.assertEqual(len(span), 12)
+
+        self.assertEqual(str(span), "1..12")
 
 if __name__ == '__main__':
     unittest.main()
