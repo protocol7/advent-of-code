@@ -69,7 +69,6 @@ def ilen(iter):
 def flatten(xs):
     return [x for xx in xs for x in xx]
 
-# joins a list into a string
 def join(xs):
     return "".join(xs)
 
