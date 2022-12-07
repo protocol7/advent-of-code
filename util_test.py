@@ -55,6 +55,9 @@ class Misc(unittest.TestCase):
     def test_flatten(self):
         self.assertEqual([1, 2, 3, 4, 5, 6, 7, 8, 9], flatten([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
 
+    def test_window(self):
+        self.assertEqual([(1, 2), (2, 3), (3, 4), (4, 5)], window([1, 2, 3, 4, 5]))
+
     def test_safe_remove(self):
         self.assertEqual([1, 3], safe_remove(2, [1, 2, 3]))
         self.assertEqual([1, 3], safe_remove(2, [1, 3]))
