@@ -37,9 +37,9 @@ for x in xs:
 
 xx = sorted(dir.size() for dir in dirs)
 
-print(sum(filter(lambda x: x < 100000, xx)))
+print(sum(filter(lambda x: x < 1e5, xx)))
 
-free = 70000000 - root.size()
-to_free = 30000000 - free
+free = 7e7 - root.size()
+to_free = 3e7 - free
 
 print(list(filter(lambda x: x > to_free, xx))[0])

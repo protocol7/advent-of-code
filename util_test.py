@@ -58,6 +58,9 @@ class Misc(unittest.TestCase):
     def test_window(self):
         self.assertEqual([(1, 2), (2, 3), (3, 4), (4, 5)], window([1, 2, 3, 4, 5]))
 
+    def test_takeuntil(self):
+        self.assertEqual([0, 1, 2, 3], takeuntil(lambda x: x == 3, [0, 1, 2, 3, 3, 4]))
+
     def test_safe_remove(self):
         self.assertEqual([1, 3], safe_remove(2, [1, 2, 3]))
         self.assertEqual([1, 3], safe_remove(2, [1, 3]))
@@ -122,7 +125,7 @@ class Misc(unittest.TestCase):
                 [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-        graph = maze_to_graph(maze, (0, 0), lambda _, __, ___, x: not x)
+        graph = Grid(maze).to_graph((0, 0), lambda _, __, ___, x: not x, neighbours=ADJACENT)
 
         self.assertEqual([(0, 0), (1, 1), (2, 2), (3, 3), (3, 4), (4, 5), (5, 4), (5, 3), (5, 2), (5, 1), (5, 0)], astar(graph, (0, 0), (5, 0)))
 
@@ -164,72 +167,6 @@ class Misc(unittest.TestCase):
                               ("41", "52", "63"),
                               ("36", "25", "14"),
                               ("63", "52", "41")]), set(map(tuple, transpositions(["123", "456"]))))
-
-
-
-    def test_in_grid(self):
-        grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-
-        self.assertTrue(in_grid(grid, 0, 0))
-        self.assertTrue(in_grid(grid, 1, 1))
-        self.assertTrue(in_grid(grid, 1, 1))
-        self.assertTrue(in_grid(grid, 2, 2))
-
-        self.assertFalse(in_grid(grid, 0, -1))
-        self.assertFalse(in_grid(grid, -1, 0))
-        self.assertFalse(in_grid(grid, 3, 0))
-        self.assertFalse(in_grid(grid, 0, 3))
-
-    def test_grid(self):
-        grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-
-        #self.assertEqual([(1, 0), (1, 2), (0, 1), (2, 1)], list(iter_grid(grid)))
-
-    def test_iter_orthogonal(self):
-        grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-
-        self.assertEqual([(1, 0), (1, 2), (0, 1), (2, 1)], list(iter_orthogonal(1, 1)))
-        self.assertEqual([(1, 0, 2), (1, 2, 8), (0, 1, 4), (2, 1, 6)], list(iter_orthogonal(1, 1, grid)))
-
-        self.assertEqual( [(0, -1), (0, 1), (-1, 0), (1, 0)], list(iter_orthogonal(0, 0)))
-        self.assertEqual( [(0, 1, 4), (1, 0, 2)], list(iter_orthogonal(0, 0, grid)))
-
-    def test_iter_adjacent(self):
-        grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-
-        self.assertEqual([(1, 0), (1, 2), (0, 1), (2, 1), (0, 0), (0, 2), (2, 0), (2, 2)], list(iter_adjacent(1, 1)))
-        self.assertEqual([(1, 0, 2), (1, 2, 8), (0, 1, 4), (2, 1, 6), (0, 0, 1), (0, 2, 7), (2, 0, 3), (2, 2, 9)], list(iter_adjacent(1, 1, grid)))
-
-        self.assertEqual( [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)], list(iter_adjacent(0, 0)))
-        self.assertEqual( [(0, 1, 4), (1, 0, 2), (1, 1, 5)], list(iter_adjacent(0, 0, grid)))
-
-    def test_grid_to_dict(self):
-        grid = [[1, 2], [3, 4]]
-
-        self.assertEqual({(0, 0): 1, (0, 1): 3, (1, 0): 2, (1, 1): 4}, grid_to_dict(grid))
-
-    def test_grid_get(self):
-        grid = [[1, 2], [3, 4]]
-
-        self.assertEqual(1, grid_get(grid, 0, 0))
-        self.assertEqual(4, grid_get(grid, 1, 1))
-        self.assertEqual(None, grid_get(grid, -1, 0))
-        self.assertEqual("foo", grid_get(grid, -1, 0, "foo"))
-
-    def test_maze_to_graph(self):
-        maze = [".#.",
-                "...",
-                ".#."]
-
-        self.assertEqual({
-            (0, 1): [(0, 0), (0, 2), (1, 1)],
-            (0, 0): [(0, 1), (1, 1)],
-            (2, 1): [(2, 0), (2, 2), (1, 1)],
-            (1, 1): [(0, 1), (2, 1), (0, 0), (0, 2), (2, 0), (2, 2)],
-            (2, 0): [(2, 1), (1, 1)],
-            (2, 2): [(2, 1), (1, 1)],
-            (0, 2): [(0, 1), (1, 1)]},
-            maze_to_graph(maze, (0, 0), lambda _, __, ___, x: x == "."))
 
     def test_binary_search(self):
         self.assertEqual((123455, 123456), binary_search(0, 10000000, lambda x: x >= 123456))
@@ -315,6 +252,53 @@ class Misc(unittest.TestCase):
         self.assertEqual(len(span), 12)
 
         self.assertEqual(str(span), "1..12")
+
+    def test_grid(self):
+        g = Grid(
+            [
+                [1, 2],
+                [3, 4],
+                [5, 6],
+            ]
+        )
+
+        self.assertEqual(2, g.width())
+        self.assertEqual(3, g.height())
+        self.assertEqual(6, len(g.points()))
+        self.assertEqual((Point(0, 0), 1), g.points()[0])
+        self.assertEqual((Point(1, 2), 6), g.points()[-1])
+
+        self.assertIn((0, 0), g)
+        self.assertIn(Point(0, 0), g)
+        self.assertIn((1, 2), g)
+        self.assertNotIn((2, 2), g)
+        self.assertNotIn((1, 3), g)
+
+        self.assertEqual([((0, 1), 3), ((1, 0), 2)], g.orthogonal((0, 0)))
+        self.assertEqual([((1, 0), 2), ((1, 2), 6), ((0, 1), 3)], g.orthogonal((1, 1)))
+
+        self.assertEqual({(0, 0): 1, (1, 0): 2, (0, 1): 3, (1, 1): 4, (0, 2): 5, (1, 2): 6}, g.to_dict())
+        self.assertEqual([[1, 2], [3, 4], [5, 6]], g.to_grid())
+
+    def test_maze_to_graph(self):
+        maze = [".#.",
+                "...",
+                ".#."]
+
+        g = Grid(maze)
+
+        self.assertEqual({
+                (0, 0): [(0, 1)],
+                (2, 0): [(2, 1)],
+                
+                (0, 1): [(0, 0), (0, 2), (1, 1)],
+                (1, 1): [(0, 1), (2, 1)],
+                (2, 1): [(2, 0), (2, 2), (1, 1)],
+
+                (0, 2): [(0, 1)],
+                (2, 2): [(2, 1)],
+            },
+            g.to_graph((0, 0), lambda _, __, ___, x: x == "."))
 
 if __name__ == '__main__':
     unittest.main()
