@@ -61,6 +61,27 @@ class Misc(unittest.TestCase):
     def test_takeuntil(self):
         self.assertEqual([0, 1, 2, 3], takeuntil(lambda x: x == 3, [0, 1, 2, 3, 3, 4]))
 
+    def test_item(self):
+        self.assertEqual(1, item([1]))
+        self.assertEqual(1, item({1}))
+
+        with self.assertRaises(Exception):
+            item([1, 2])
+        with self.assertRaises(Exception):
+            item([])
+
+        self.assertEqual(1, item(iter([1])))
+
+        with self.assertRaises(Exception):
+            item(iter([1, 2]))
+        with self.assertRaises(Exception):
+            item(iter([]))
+
+    def test_diffrange(self):
+        self.assertEqual([1, 2, 3], diffrange(1, 3))
+        self.assertEqual([3, 2, 1], diffrange(3, 1))
+        self.assertEqual([1], diffrange(1, 1))
+
     def test_safe_remove(self):
         self.assertEqual([1, 3], safe_remove(2, [1, 2, 3]))
         self.assertEqual([1, 3], safe_remove(2, [1, 3]))
@@ -198,60 +219,84 @@ class Misc(unittest.TestCase):
         self.assertEqual(expected, max_bipartite_matching(graph))
         self.assertEqual(expected, reduce_unique_options(graph))
 
-    def test_span(self):
-        span = Span(1, 12)
+    def test_interval(self):
+        interval = Interval(1, 12)
 
         with self.assertRaises(Exception):
-            Span(2, 1)
+            Interval(2, 1)
 
-        self.assertIn(1, span)
-        self.assertIn(12, span)
-        self.assertIn(6, span)
-        self.assertNotIn(0, span)
-        self.assertNotIn(13, span)
+        self.assertIn(1, interval)
+        self.assertIn(12, interval)
+        self.assertIn(6, interval)
+        self.assertNotIn(0, interval)
+        self.assertNotIn(13, interval)
 
-        span2 = Span(2, 11)
-        self.assertIn(span2, span)
-        self.assertIn(span, span)
-        self.assertNotIn(span, span2)
+        interval2 = Interval(2, 11)
+        self.assertIn(interval2, interval)
+        self.assertIn(interval, interval)
+        self.assertNotIn(interval, interval2)
 
-        self.assertEqual(span & Span(0, 3), Span(1, 3))
-        self.assertEqual(span & Span(10, 13), Span(10, 12))
+        self.assertEqual(interval & Interval(0, 3), Interval(1, 3))
+        self.assertEqual(interval & Interval(10, 13), Interval(10, 12))
 
-        self.assertTrue(span.intersects(span))
-        self.assertTrue(span.intersects(Span(3, 4)))
-        self.assertTrue(Span(3, 4).intersects(span))
-        self.assertTrue(span.intersects(Span(1, 1)))
-        self.assertTrue(Span(1, 1).intersects(span))
-        self.assertTrue(span.intersects(Span(12, 12)))
-        self.assertTrue(Span(12, 12).intersects(span))
-        self.assertFalse(Span(13, 15).intersects(span))
-        self.assertFalse(span.intersects(Span(13, 15)))
+        self.assertTrue(interval.intersects(interval))
+        self.assertTrue(interval.intersects(Interval(3, 4)))
+        self.assertTrue(Interval(3, 4).intersects(interval))
+        self.assertTrue(interval.intersects(Interval(1, 1)))
+        self.assertTrue(Interval(1, 1).intersects(interval))
+        self.assertTrue(interval.intersects(Interval(12, 12)))
+        self.assertTrue(Interval(12, 12).intersects(interval))
+        self.assertFalse(Interval(13, 15).intersects(interval))
+        self.assertFalse(interval.intersects(Interval(13, 15)))
 
-        self.assertEqual(span & Span(3, 4), Span(3, 4))
-        self.assertEqual(span & Span(0, 14), Span(1, 12))
-        self.assertEqual(span & Span(0, 1), Span(1, 1))
-        self.assertEqual(span & Span(1, 1), Span(1, 1))
-        self.assertEqual(span & Span(12, 14), Span(12, 12))
-        self.assertEqual(span & Span(12, 12), Span(12, 12))
-        self.assertIsNone(span & Span(13, 15))
+        self.assertEqual(interval & Interval(3, 4), Interval(3, 4))
+        self.assertEqual(interval & Interval(0, 14), Interval(1, 12))
+        self.assertEqual(interval & Interval(0, 1), Interval(1, 1))
+        self.assertEqual(interval & Interval(1, 1), Interval(1, 1))
+        self.assertEqual(interval & Interval(12, 14), Interval(12, 12))
+        self.assertEqual(interval & Interval(12, 12), Interval(12, 12))
+        self.assertIsNone(interval & Interval(13, 15))
 
-        self.assertEqual(span | Span(0, 3), Span(0, 12))
-        self.assertEqual(span | Span(0, 1), Span(0, 12))
-        self.assertEqual(span | Span(11, 13), Span(1, 13))
-        self.assertEqual(span | Span(12, 13), Span(1, 13))
-        self.assertIsNone(span | Span(13, 15))
+        self.assertEqual(interval | Interval(0, 3), Interval(0, 12))
+        self.assertEqual(interval | Interval(0, 1), Interval(0, 12))
+        self.assertEqual(interval | Interval(11, 13), Interval(1, 13))
+        self.assertEqual(interval | Interval(12, 13), Interval(1, 13))
+        self.assertEqual(interval | Interval(13, 15), Interval(1, 15)) # union with adjacent
+        self.assertIsNone(interval | Interval(14, 15))
 
-        self.assertEqual(span.range(), range(1, 13))
-        self.assertEqual(span.set(), {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})
+        self.assertEqual(interval.range(), range(1, 13))
+        self.assertEqual(interval.set(), {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})
 
-        self.assertTrue(span)
-        self.assertTrue(Span(1, 1))
+        self.assertTrue(interval)
+        self.assertTrue(Interval(1, 1))
 
-        self.assertEqual(len(Span(1, 1)), 1)
-        self.assertEqual(len(span), 12)
+        self.assertEqual(len(Interval(1, 1)), 1)
+        self.assertEqual(len(interval), 12)
 
-        self.assertEqual(str(span), "1..12")
+        self.assertEqual(str(interval), "1..12")
+
+        self.assertLess(Interval(1, 2), Interval(4, 5))
+        self.assertLess(Interval(1, 7), Interval(4, 5))
+
+        self.assertEqual([4, 5, 6], list(iter(Interval(4, 6))))
+
+    def test_intervals(self):
+        intervals = Intervals([Interval(1, 2)])
+        intervals.add(Interval(4, 5))
+
+        self.assertEqual([Interval(1, 2), Interval(4, 5)], intervals.intervals)
+
+        intervals.add(Interval(2, 4))
+        self.assertEqual([Interval(1, 5)], intervals.intervals)
+
+        intervals.add(Interval(6, 7)) # adjacent
+        self.assertEqual([Interval(1, 7)], intervals.intervals)
+
+        intervals.add(Interval(-2, -1)) # adjacent
+        self.assertEqual([Interval(-2, -1), Interval(1, 7)], intervals.intervals) # ensure intervals are sorted
+
+        self.assertEqual((intervals & Interval(-1, 4)).intervals, [Interval(-1, -1), Interval(1, 4)])
+        self.assertEqual((intervals & Interval(2, 4)).intervals, [Interval(2, 4)])
 
     def test_grid(self):
         g = Grid(

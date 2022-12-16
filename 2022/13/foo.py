@@ -17,9 +17,9 @@ def compare(a, b):
                 if c != 0:
                     return c
         return 0
-    elif type(a) == int and type(b) == list:
+    elif type(a) == int:
         return compare([a], b)
-    elif type(a) == list and type(b) == int:
+    elif type(b) == int:
         return compare(a, [b])
 
 xs = [eval(x) for x in sys.stdin if x.strip()]
