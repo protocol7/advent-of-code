@@ -474,7 +474,7 @@ def bit_test(b, i):
     return b & 1 << i
 
 # flip a bit
-def bit_flip(b, i):
+def bit_flip(b):
     return b ^ (1 << i)
 
 # flip all bits

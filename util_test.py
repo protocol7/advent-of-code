@@ -192,6 +192,24 @@ class Misc(unittest.TestCase):
     def test_binary_search(self):
         self.assertEqual((123455, 123456), binary_search(0, 10000000, lambda x: x >= 123456))
 
+    def test_bit_functions(self):
+        b = 0
+        self.assertFalse(bit_test(b, 3))
+
+        b = bit_set(b, 3)
+        self.assertTrue(bit_test(b, 3))
+
+        b = bit_unset(b, 3)
+        self.assertFalse(bit_test(b, 3))
+
+        b = bit_flip(b, 3)
+        self.assertTrue(bit_test(b, 3))
+
+        self.assertFalse(bit_test(b, 2))
+        b = bit_flip_all(b)
+        self.assertTrue(bit_test(b, 2))
+        self.assertFalse(bit_test(b, 3))
+
     def test_lcm(self):
         self.assertEqual(12, lcm(4, 6))
 
