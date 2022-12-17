@@ -77,6 +77,11 @@ class Misc(unittest.TestCase):
         with self.assertRaises(Exception):
             item(iter([]))
 
+    def test_agg_each(self):
+        self.assertEqual([4, 3], agg_each([[1, 2], [3, 1]], lambda a, b: a + b))
+        self.assertEqual([4, 3], max_each([[1, 1], [2, 3], [4, 2]]))
+        self.assertEqual([1, 1, 0], min_each([[1, 1, 2], [2, 3, 0], [4, 2, 1]]))
+
     def test_diffrange(self):
         self.assertEqual([1, 2, 3], diffrange(1, 3))
         self.assertEqual([3, 2, 1], diffrange(3, 1))
