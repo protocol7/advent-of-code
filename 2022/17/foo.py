@@ -95,7 +95,7 @@ for r in count(1):
                 maxy = max(maxy, yy)
 
             def pattern(d, maxy):
-                # get the points that have rocks in them some number rows below maxy
+                # get the occupied points some number rows below maxy
                 p = set()
                 for y in range(50):
                     for x in range(7):
