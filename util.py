@@ -391,45 +391,6 @@ def astar(graph, start, end):
                 heappush(q, (priority, path + [n]))
                 seen.add(n)
 
-# flood fills neighbours in a grid starting from x and y and until the boundary condition is met
-# returns the number of cells that was filled
-#
-# For example, using the grid:
-# 0 0 1
-# 0 1 0
-# 1 0 0
-#
-# flood_fill(xs, 0, 0, lambda c: c == 1, 2)
-#
-# will result in
-# 2 2 1
-# 2 1 0
-# 1 0 0
-#
-# and return 3
-def flood_fill(xs, x ,y, boundary, fill_value, neighbours=ORTHOGONAL):
-    # check that we are in the grid
-    if x < 0 or x >= len(xs[0]) or y < 0 or y >= len(xs):
-        return 0
-
-    # check if we are on the boundary
-    if boundary(xs[y][x]):
-        return 0
-
-    # check if we are already filled
-    if xs[y][x] == fill_value:
-        return 0
-
-    # fill
-    xs[y][x] = fill_value
-    s = 1
-
-    # attempt to fill the neighboring positions
-    for dx, dy in neighbours:
-        s += flood_fill(xs, x + dx, y + dy, boundary, fill_value)
-
-    return s
-
 # transposes a list of lists, e.g. [[1, 2, 3], [4, 5, 6], [7, 8, 9]] -> [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
 def transpose(xs):
     return list(map(list, zip(*xs)))
@@ -834,6 +795,7 @@ class Point:
         else:
             assert False
 
+# a grid starting at (0, 0)
 class Grid:
     def __init__(self, grid):
         if type(grid) == dict:
@@ -844,8 +806,7 @@ class Grid:
                 for x, c in enumerate(row):
                     self.d[Point(x, y)] = c
 
-        self.w = max(p.x for p in self.d.keys()) + 1
-        self.h = max(p.y for p in self.d.keys()) + 1
+        self.w, self.h = [i + 1 for i in max_each(self.d.keys())]
 
     def width(self):
         return self.w
@@ -870,14 +831,14 @@ class Grid:
     def __getitem__(self, point):
         return self.d.get(Point(point))
 
-    # does the grid contain this point?
+    # does the grid contain this point? assumes grid starts at (0, 0)
     def __contains__(self, point):
         x, y = point
         return x >= 0 and y >= 0 and x < self.w and y < self.h
 
     # return a list of points and values from the provided point (not inclduing), in the direction given, e.g.
     # grid.direction((0, 0), (0, 1)) -> [((0, 1), 7), ((0, 2), 8), ((0, 3), 9)]
-    def direction(self, point, direction):
+    def ray(self, point, direction):
         p = Point(point) + direction
         out = []
         while p in self:
@@ -949,3 +910,62 @@ class Grid:
                         heappush(q, n)
                         seen.add(n)
         return g
+
+    # flood fills neighbours in the grid starting from x and y and until the boundary condition is met
+    # returns the number of cells that was filled
+    #
+    # For example, using the grid:
+    # 0 0 1
+    # 0 1 0
+    # 1 0 0
+    #
+    # g.flood_fill((0, 0), lambda c: c == 1, 2)
+    #
+    # will result in
+    # 2 2 1
+    # 2 1 0
+    # 1 0 0
+    #
+    # and return 3
+    def flood_fill(self, point, boundary, fill_value, neighbours=ORTHOGONAL):
+        q = deque([Point(point)])
+
+        s = 0
+        while q:
+            point = q.popleft()
+
+            # check that we are in the grid
+            if point not in self:
+                continue
+
+            # check if we are on the boundary
+            if boundary(self.d[point]):
+                continue
+
+            # check if we are already filled
+            if self.d[point] == fill_value:
+                continue
+
+            # fill
+            self.d[point] = fill_value
+            s += 1
+
+            # attempt to fill the neighboring positions
+            for n in neighbours:
+                q.append(point + n)
+
+        return s
+
+    # prints the grid, taking the first character from the value for each cell
+    def pretty_print(self):
+        minx, miny = min_each(self.d.keys())
+
+        for y in range(miny, miny + self.h):
+            row = ""
+            for x in range(minx, minx + self.w):
+                v = self.d.get((x, y))
+                if v is not None:
+                    row += str(v)[:1]
+                else:
+                    row += "."
+            print(row)

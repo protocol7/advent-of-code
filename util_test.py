@@ -155,14 +155,6 @@ class Misc(unittest.TestCase):
 
         self.assertEqual([(0, 0), (1, 1), (2, 2), (3, 3), (3, 4), (4, 5), (5, 4), (5, 3), (5, 2), (5, 1), (5, 0)], astar(graph, (0, 0), (5, 0)))
 
-    def test_flood_fill(self):
-        xs = [[0, 0, 1], [0, 1, 0], [1, 0, 0]]
-
-        s = flood_fill(xs, 0, 0, lambda c: c == 1, 2)
-
-        self.assertEqual(3, s)
-
-
     def test_transpose(self):
         self.assertEqual([[1, 4, 7], [2, 5, 8], [3, 6, 9]], transpose([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
 
@@ -367,6 +359,18 @@ class Misc(unittest.TestCase):
                 (2, 2): [(2, 1)],
             },
             g.to_graph((0, 0), lambda _, __, ___, x: x == "."))
+
+    def test_flood_fill(self):
+        g = Grid([[0, 0, 1], [0, 1, 0], [1, 0, 0]])
+
+        s = g.flood_fill((0, 0), lambda c: c == 1, 2)
+
+        self.assertEqual(3, s)
+        self.assertEqual(2, g[(0, 0)])
+        self.assertEqual(2, g[(0, 1)])
+        self.assertEqual(2, g[(1, 0)])
+        self.assertEqual(0, g[(2, 2)])
+
 
 if __name__ == '__main__':
     unittest.main()

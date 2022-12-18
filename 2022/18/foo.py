@@ -1,6 +1,4 @@
 import sys
-sys.setrecursionlimit(15000)
-
 from util import *
 
 def parse(line):
@@ -10,6 +8,7 @@ xs = set(map(parse, sys.stdin))
 
 ORTHOGONAL_3D = [(0, -1, 0), (0, 1, 0), (-1, 0, 0), (1, 0, 0), (0, 0, -1), (0, 0, 1)]
 
+# part 1
 c = 0
 for x, y, z in xs:
     for dx, dy, dz in ORTHOGONAL_3D:
@@ -17,29 +16,35 @@ for x, y, z in xs:
 
 print(c)
 
+# part 2
 sx, sy, sz = [s - 2 for s in min_each(xs)]
 ex, ey, ez = [s + 2 for s in max_each(xs)]
 
 def flood_fill(dd, x ,y, z):
-    # check that we are in the grid
-    if x < sx or x >= ex or y < sy or y >= ey or z < sz or z >= ez:
-        return
+    q = deque([(x, y, z)])
 
-    k = (x, y, z)
-    # check if we are on the boundary
-    if k in xs:
-        return
+    while q:
+        k = q.popleft()
+        x, y, z = k
 
-    # check if we are already filled
-    if k in dd:
-        return
+        # check that we are in the grid
+        if x < sx or x >= ex or y < sy or y >= ey or z < sz or z >= ez:
+            continue
 
-    # fill
-    dd.add(k)
+        # check if we are on the boundary
+        if k in xs:
+            continue
 
-    # attempt to fill the neighboring positions
-    for dx, dy, dz in ORTHOGONAL_3D:
-        flood_fill(dd, x + dx, y + dy, z + dz)
+        # check if we are already filled
+        if k in dd:
+            continue
+
+        # fill
+        dd.add(k)
+
+        # attempt to fill the neighboring positions
+        for dx, dy, dz in ORTHOGONAL_3D:
+            q.append((x + dx, y + dy, z + dz))
 
 dd = set()
 
