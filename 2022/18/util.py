@@ -335,8 +335,6 @@ def top_sort(graph, start):
 ORTHOGONAL = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 ADJACENT = [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]
 
-ORTHOGONAL_3D = [(0, -1, 0), (0, 1, 0), (-1, 0, 0), (1, 0, 0), (0, 0, -1), (0, 0, 1)]
-
 # Dijkstra's shortest path for a weighted graph
 # graph is a dict of node -> dict of neighbour and weight
 # start is the starting node

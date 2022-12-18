@@ -97,7 +97,7 @@ for r in count(1):
             def pattern(d, maxy):
                 # get the occupied points some number rows below maxy
                 p = set()
-                for y in range(50):
+                for y in range(100):
                     for x in range(7):
                         if (x, maxy - y) in d:
                             p.add((x, y))
@@ -112,7 +112,7 @@ for r in count(1):
                 p = pattern(d, maxy)
 
                 # state is where we are in the cycles of jets and rocks, and the points occupied in some rows below maxy
-                k = (jeti, rocki, p)
+                k = (jeti, rocki)
 
                 if k in seen:
                     last_r, last_maxy = seen[k]
