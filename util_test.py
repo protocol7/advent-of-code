@@ -2,7 +2,7 @@ from util import *
 from collections import *
 import unittest
 
-class Misc(unittest.TestCase):
+class Utils(unittest.TestCase):
 
     def test_flatmap(self):
         self.assertEqual([4, 1, 4, 2, 4, 3], flatmap(lambda x: [4, x], [1, 2, 3]))
@@ -92,6 +92,41 @@ class Misc(unittest.TestCase):
         self.assertEqual([1, 3], safe_remove(2, [1, 3]))
         self.assertEqual(set([1, 3]), safe_remove(2, set([1, 2, 3])))
         self.assertEqual(set([1, 3]), safe_remove(2, set([1, 3])))
+
+    def test_circular_list(self):
+        xx = CircularList([0, 1, 2, 3])
+
+        self.assertEqual(xx[0], 0)
+        self.assertEqual(xx[4], 0)
+        self.assertEqual(xx[5], 1)
+        self.assertEqual(xx[-1], 3)
+
+        self.assertEqual(xx.pop(0), 0)
+        self.assertEqual(xx.xs, [1, 2, 3])
+        
+        xx.insert(0, 4)
+        self.assertEqual(xx.xs, [4, 1, 2, 3])
+        
+        xx.insert(4, 5)
+        self.assertEqual(xx.xs, [5, 4, 1, 2, 3])
+
+        xx.move_by(1, 2)
+        self.assertEqual(xx.xs, [5, 1, 2, 4, 3])
+
+        xx.move_by(3, 2)
+        self.assertEqual(xx.xs, [5, 4, 1, 2, 3])
+
+        xx.move_by(1, -2)
+        self.assertEqual(xx.xs, [5, 1, 2, 4, 3])
+
+        xx.move_to(0, 3)
+        self.assertEqual(xx.xs, [1, 2, 5, 4, 3])
+
+        xx.move_to(3, 0)
+        self.assertEqual(xx.xs, [4, 1, 2, 5, 3])
+
+        xx.move_to(3, 3)
+        self.assertEqual(xx.xs, [4, 1, 2, 5, 3])
 
     def test_manhattan(self):
         self.assertEqual(13, manhattan((5, 8)))
