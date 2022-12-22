@@ -371,6 +371,11 @@ class Utils(unittest.TestCase):
         self.assertEqual((intervals & Interval(-1, 4)).intervals, [Interval(-1, -1), Interval(1, 4)])
         self.assertEqual((intervals & Interval(2, 4)).intervals, [Interval(2, 4)])
 
+    def test_point(self):
+        self.assertTrue(Point(1, 0) < Point(0, 1))
+        self.assertTrue(Point(1, 0) < Point(0, 2))
+        self.assertFalse(Point(0, 2) < Point(1, 0))
+
     def test_grid(self):
         g = Grid(
             [
@@ -380,6 +385,7 @@ class Utils(unittest.TestCase):
             ]
         )
 
+        self.assertEqual([(0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)], [p for p, _ in g.points()])
         self.assertEqual(2, g.width())
         self.assertEqual(3, g.height())
         self.assertEqual(6, len(g.points()))

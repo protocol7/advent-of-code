@@ -853,7 +853,10 @@ class Point:
         return "(%s, %s)" % (self.x, self.y)
 
     def __lt__(self, other):
-        return self.y < other.y or self.x < other.x
+        if self.y == other.y:
+            return self.x < other.x
+        else:
+            return self.y < other.y
 
     def __eq__(self, other):
         if type(other) == Point:
@@ -898,6 +901,7 @@ class Grid:
     def height(self):
         return self.h
 
+    # returns points in order, row by row
     def points(self):
         return sorted(self.d.items())
 
