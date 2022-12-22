@@ -180,14 +180,23 @@ class CircularList:
 
         self.insert(i + steps, item)
 
-    # move the item at index i to the position before new_id. wraps around
+    def append(self, item):
+        self.xs.append(item)
+
+    # move the item at index i to the new_i position. wraps around, for negative new_i it will move the item before the new_i
+    # [1, 2, 3, 4].move_to(0, 1) -> [2, 1, 3, 4]
+    # [1, 2, 3, 4].move_to(0, 5) -> [2, 1, 3, 4]
+    # [1, 2, 3, 4].move_to(0, -1) -> [2, 3, 1, 4]
     def move_to(self, i, new_i):
         item = self.pop(i)
+        self.insert(new_i, item)
 
-        if new_i > i:
-            self.insert(new_i - 1, item)
-        else:
-            self.insert(new_i, item)
+    # rotate the list by some number of items
+    # [1, 2, 3, 4].rotate(1) -> [2, 3, 4, 1]
+    # [1, 2, 3, 4].rotate(-1) -> [4, 1, 2, 3]
+    def rotate(self, by):
+        by = by % len(self.xs)
+        self.xs = self.xs[by:] + self.xs[:by]
 
     def __repr__(self):
         return str(self.xs)
@@ -466,6 +475,7 @@ def transpositions(xs):
 # check(i), return True if i is too large
 # returns the largest value where check is false, and the smallest where check
 # is true (just to remember to think about the one-off :)
+# return None if unable to find a result
 def binary_search(lo, hi, check):
     blo = check(lo)
     bhi = check(hi)
@@ -473,6 +483,10 @@ def binary_search(lo, hi, check):
         assert False, "lo and hi both %s" % blo
 
     while True:
+        if lo == hi:
+            # no result
+            return None
+
         x = (lo + hi) // 2
         if check(x):
             if not check(x-1):

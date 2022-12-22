@@ -180,14 +180,13 @@ class CircularList:
 
         self.insert(i + steps, item)
 
+    def append(self, item):
+        self.xs.append(item)
+
     # move the item at index i to the position before new_id. wraps around
     def move_to(self, i, new_i):
         item = self.pop(i)
-
-        if new_i > i:
-            self.insert(new_i - 1, item)
-        else:
-            self.insert(new_i, item)
+        self.insert(new_i, item)
 
     def __repr__(self):
         return str(self.xs)

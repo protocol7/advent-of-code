@@ -8,9 +8,9 @@ for part, multiplier in ((1, 1), (10, 811589153)):
 
     for _ in range(part):
         for move in range(len(xs)):
-            # find the next to move
             i = [oi for _, oi in xs].index(move)
 
+            #xs.move_to(i, i + xs[i][0])
             xs.move_by(i, xs[i][0])
 
     i = [n for n, _ in xs].index(0)

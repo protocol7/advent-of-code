@@ -119,7 +119,11 @@ class Utils(unittest.TestCase):
         xx.move_by(1, -2)
         self.assertEqual(xx.xs, [5, 1, 2, 4, 3])
 
-        xx.move_to(0, 3)
+        xx.move_by(1, 0)
+        self.assertEqual(xx.xs, [5, 1, 2, 4, 3])
+
+        # move_to
+        xx.move_to(0, 2)
         self.assertEqual(xx.xs, [1, 2, 5, 4, 3])
 
         xx.move_to(3, 0)
@@ -127,6 +131,25 @@ class Utils(unittest.TestCase):
 
         xx.move_to(3, 3)
         self.assertEqual(xx.xs, [4, 1, 2, 5, 3])
+
+        xx.move_to(1, -1)
+        self.assertEqual(xx.xs, [4, 2, 5, 1, 3])
+
+        xx.move_to(1, -2)
+        self.assertEqual(xx.xs, [4, 5, 2, 1, 3])
+
+        xx = CircularList([0, 1, 2, 3, 4])
+        xx.rotate(1)
+        self.assertEqual(xx.xs, [1, 2, 3, 4, 0])
+
+        xx.rotate(2)
+        self.assertEqual(xx.xs, [3, 4, 0, 1, 2])
+
+        xx.rotate(7)
+        self.assertEqual(xx.xs, [0, 1, 2, 3, 4])
+
+        xx.rotate(-2)
+        self.assertEqual(xx.xs, [3, 4, 0, 1, 2])
 
     def test_manhattan(self):
         self.assertEqual(13, manhattan((5, 8)))
