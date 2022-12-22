@@ -1,0 +1,21 @@
+root: pppw + drzm
+dbpl: 41
+cczh: sllz + lgvd
+zczc: dvpt - qlgz
+ptdq: humn * humn
+dvpt: lfqf * zstt
+lfqf: 3
+humn: 5
+ljgn: 360
+sjmn: ptdq * dbpl
+sllz: ptdq * ptdq
+pppw: cczh * lfqf
+lgvd: ljgn + wvql
+drzm: hmdt - zczc
+hmdt: 0
+qlgz: bzbn * rjtn
+zstt: rjtn * ptdq
+rjtn: hwpf * humn
+hwpf: 2
+bzbn: 63
+wvql: hmdt - sjmn
