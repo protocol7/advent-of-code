@@ -209,7 +209,7 @@ class Utils(unittest.TestCase):
                 [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-        graph = Grid(maze).to_graph((0, 0), lambda _, __, ___, x: not x, neighbours=ADJACENT)
+        graph = Grid(maze).to_graph((0, 0), lambda _, __, ___, x: x == 0, neighbours=ADJACENT)
 
         self.assertEqual([(0, 0), (1, 1), (2, 2), (3, 3), (3, 4), (4, 5), (5, 4), (5, 3), (5, 2), (5, 1), (5, 0)], astar(graph, (0, 0), (5, 0)))
 
@@ -386,8 +386,8 @@ class Utils(unittest.TestCase):
         )
 
         self.assertEqual([(0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)], [p for p, _ in g.points()])
-        self.assertEqual(2, g.width())
-        self.assertEqual(3, g.height())
+        self.assertEqual([0,0], g.min())
+        self.assertEqual([1, 2], g.max())
         self.assertEqual(6, len(g.points()))
         self.assertEqual((Point(0, 0), 1), g.points()[0])
         self.assertEqual((Point(1, 2), 6), g.points()[-1])
@@ -398,8 +398,7 @@ class Utils(unittest.TestCase):
         self.assertNotIn((2, 2), g)
         self.assertNotIn((1, 3), g)
 
-        self.assertEqual([((0, 1), 3), ((1, 0), 2)], g.orthogonal((0, 0)))
-        self.assertEqual([((1, 0), 2), ((1, 2), 6), ((0, 1), 3)], g.orthogonal((1, 1)))
+        self.assertEqual([((0, -1), None), ((0, 1), 3), ((-1, 0), None), ((1, 0), 2)], g.orthogonal((0, 0)))
 
         self.assertEqual({(0, 0): 1, (1, 0): 2, (0, 1): 3, (1, 1): 4, (0, 2): 5, (1, 2): 6}, g.to_dict())
         self.assertEqual([[1, 2], [3, 4], [5, 6]], g.to_grid())
