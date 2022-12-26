@@ -1,0 +1,10 @@
+dog,war
+bow,ply
+tree,fled
+fire,park
+forge,house
+stall,chili
+start,great
+inner,outer
+asking,bobble
+coffee,drawer
