@@ -115,7 +115,7 @@ def item(xs):
 
 # apply the aggregate function to each item for the lists in xs, return a list of the same length as each item in xs
 #
-# agg_each([[1, 2, 4], [3, 1, 7]], max) -> [3, 2, 7]
+# agg_each([[1, 2], [3, 1]], max) -> [3, 2]
 def agg_each(xs, agg):
     def f(*xx):
         return [agg(a, b) for a, b in zip(*xx)]
