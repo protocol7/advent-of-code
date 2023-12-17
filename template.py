@@ -10,3 +10,5 @@ def parse(line):
 
 xs = list(map(parse, sys.stdin))
 
+for x in xs:
+    print(x)
