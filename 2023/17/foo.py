@@ -5,7 +5,7 @@ from util import Grid, Point, turn_left, turn_right, RIGHT, DOWN
 
 
 def parse(line):
-    return list(map(int, line.strip()))
+    return map(int, line.strip())
 
 
 xs = list(map(parse, sys.stdin))
