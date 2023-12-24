@@ -1092,7 +1092,8 @@ class Grid:
                 continue
 
             # check if we are on the boundary
-            if boundary(self.d[point]):
+            #if boundary(self.d[point]):
+            if boundary(point):
                 continue
 
             # check if we are already filled

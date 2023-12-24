@@ -1,7 +1,7 @@
 import sys
 sys.setrecursionlimit(10000)
 from collections import defaultdict, deque
-from util import Grid, Point, ORTHOGONAL, LEFT, RIGHT, UP, DOWN
+from util import Grid, Point, ORTHOGONAL, LEFT, RIGHT, UP, DOWN, item
 from copy import deepcopy
 
 def parse(line):
@@ -83,4 +83,8 @@ print(dfs(graph, start, end, 0, set()))
 
 # part 2
 graph = compress(to_graph(grid, start, lambda _: ORTHOGONAL))
-print(dfs(graph, start, end, 0, set()))
+
+# the end if only connected to one other node, so if we reach that, we are done
+penultimate = item(graph[end])
+
+print(dfs(graph, start, penultimate, 0, set()) + graph[end][penultimate])
