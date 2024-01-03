@@ -1,2 +1,4 @@
 z3-solver
 sympy
+networkx
+graphviz
