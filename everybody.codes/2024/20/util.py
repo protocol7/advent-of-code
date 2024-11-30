@@ -979,6 +979,9 @@ class Grid:
             def __iter__(self):
                 return iter((Point(x, self.y), self.grid[(x, self.y)]) for x in range(self.grid._min[0], self.grid._max[0] + 1))
 
+            def __getitem__(self, x):
+                return self.grid.d.get(Point(x, self.y))
+
             def __repr__(self):
                 row = ""
                 for x in range(self.grid._min[0], self.grid._max[0]+1):

@@ -881,6 +881,7 @@ class Point:
             assert False
 
 
+
 # a line defined by two points
 class Line:
     @staticmethod

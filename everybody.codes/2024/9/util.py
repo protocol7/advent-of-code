@@ -982,7 +982,7 @@ class Grid:
             def __repr__(self):
                 row = ""
                 for x in range(self.grid._min[0], self.grid._max[0]+1):
-                    v = self.grid.d.get((x, self.y))
+                    v = self.grid.d.get((x, y))
                     if v is not None:
                         row += str(v)[:1]
                     else:

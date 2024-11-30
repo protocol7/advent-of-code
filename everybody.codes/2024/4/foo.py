@@ -7,10 +7,11 @@ from util import *
 
 
 def parse(line):
-    return line.strip()
+    return int(line.strip())
 
 
 xs = list(map(parse, sys.stdin))
 
-for x in xs:
-    print(x)
+m = min(xs)
+
+print(sum(x - m for x in xs))
