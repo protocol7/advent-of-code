@@ -39,4 +39,3 @@ for x in cs:
         t += f
 
 print(t)
-
