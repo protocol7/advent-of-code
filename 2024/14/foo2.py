@@ -17,8 +17,6 @@ def run():
     for i in count(1):
         d = {}
 
-        # pre filter to speed things up
-        c = Counter()
         for ff in xs:
             x, y, vx, vy = ff
             x = (x + vx) % w
@@ -27,19 +25,17 @@ def run():
             ff[0] = x
             ff[1] = y
 
-            c[y] += 1
             d[(x, y)] = "#"
 
-        if c.most_common(1)[0][1] > 20:
-            g = Grid(d)
+        g = Grid(d)
 
-            for row in g.rows():
-                s = str(row)
+        for row in g.rows():
+            s = str(row)
 
-                if "########" in s:
-                    print(i)
-                    g.pretty_print()
+            if "########" in s:
+                print(i)
+                g.pretty_print()
 
-                    return
+                return
 
 run()
