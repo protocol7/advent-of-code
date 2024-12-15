@@ -938,14 +938,18 @@ class Grid:
         else:
             assert False, grid
 
-        self._min = min_each(self.d.keys())
-        self._max = max_each(self.d.keys())
+        self._min = None
+        self._max = None
 
     # return min and max x coordinates (might not be )
     def min(self):
+        if self._min is None:
+            self._min = min_each(self.d.keys())
         return self._min
 
     def max(self):
+        if self._max is None:
+            self._max = max_each(self.d.keys())
         return self._max
 
     # return points with values, unordered
@@ -989,7 +993,7 @@ class Grid:
                         row += "."
                 return row
 
-        for y in range(self._min[1], self._max[1] + 1):
+        for y in range(self.min()[1], self.max()[1] + 1):
             yield GridRow(self, y)
 
     # return a list of points and values from the provided point (not inclduing), in the direction given, e.g.

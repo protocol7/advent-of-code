@@ -53,10 +53,10 @@ def try_move(g, p, dir):
     bs = list(box(g, np))
 
     gg = Grid(dict(g.d))
-    while True:
-        for b, _ in bs:
-            gg.d[b] = "."
+    for b, _ in bs:
+        gg.d[b] = "."
 
+    while True:
         # try to move, these would be the new positions and values
         nbs = [(b + dir, x) for b, x in bs]
 
@@ -80,6 +80,9 @@ def try_move(g, p, dir):
             for b, _ in nbs:
                 if gg[b] in "[]":
                     new_boxes.update(box(g, b))
+
+            for b, _ in new_boxes:
+                gg.d[b] = "."
 
             bs.extend(new_boxes)
 

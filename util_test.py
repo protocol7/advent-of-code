@@ -157,10 +157,10 @@ class Utils(unittest.TestCase):
         self.assertEqual(10, manhattan((1, 2), (5, 8)))
         self.assertEqual(10, manhattan(1, 2, 5, 8))
 
-    def test_topsort(self):
+    def test_topo_sort(self):
         g = {'A': ['ORE'], 'C': ['B', 'A'], 'B': ['ORE'], 'E': ['D', 'A'], 'D': ['C', 'A'], 'FUEL': ['E', 'A']}
-        self.assertEqual(['FUEL', 'E', 'D', 'C', 'A', 'B', 'ORE'], top_sort(g, "FUEL"))
-        self.assertEqual(['C', 'A', 'B', 'ORE'], top_sort(g, "C"))
+        self.assertEqual(['FUEL', 'E', 'D', 'C', 'A', 'B', 'ORE'], topo_sort(g, "FUEL"))
+        self.assertEqual(['C', 'A', 'B', 'ORE'], topo_sort(g, "C"))
 
     def test_bfs(self):
         g = {'A': ['ORE'], 'C': ['B', 'A'], 'B': ['ORE'], 'E': ['D', 'A'], 'D': ['C', 'A'], 'FUEL': ['E', 'A']}
