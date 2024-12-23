@@ -44,5 +44,4 @@ for x in xs:
     for k, v in max_prize.items():
         total_max[k] += v
 
-seq = max(total_max, key=lambda k: total_max[k])
-print(total_max[seq])
+print(max(total_max.values()))
