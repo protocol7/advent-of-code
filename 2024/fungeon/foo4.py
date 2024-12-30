@@ -55,14 +55,9 @@ start = gs[start_level].points_by_value()["<"][0]
 gs[start_level].d[start] = "."
 dir = N
 
-teleports = set()
+DS = "0123456789+-*/%"
 
-for g in gs:
-    ts = g.points_by_value()["*"]
-    teleports.update(ts)
-    for t in ts:
-        g.d[t] = "."
-
+stack = []
 p = start
 level = start_level
 steps = 0
@@ -71,14 +66,31 @@ while True:
     steps += 1
 
     if np == start and level == start_level:
-        print(steps)
+        print(stack.pop())
         break
 
     nv = gs[level][np]
 
-    if nv == ".":
-        if np in teleports:
-            print("teleport!")
+    if nv in DS:
+        if nv.isdigit():
+            stack.append(int(nv))
+        else:
+            b = stack.pop()
+            a = stack.pop()
+
+            if nv == "+":
+                stack.append(a + b)
+            elif nv == "-":
+                stack.append(a - b)
+            elif nv == "*":
+                stack.append(a * b)
+            elif nv == "/":
+                stack.append(a // b)
+            elif nv == "%":
+                stack.append(a % b)
+
+        p = np
+    elif nv == ".":
         p = np
     elif nv == ">":
         p = np

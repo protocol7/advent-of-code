@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+from collections import deque
 from util import *
 
 # https://spotify.slack.com/archives/C2RUDPD63/p1735238455771449
@@ -56,36 +57,47 @@ gs[start_level].d[start] = "."
 dir = N
 
 teleports = set()
-
-for g in gs:
-    ts = g.points_by_value()["*"]
-    teleports.update(ts)
+for level in range(len(gs)):
+    ts = gs[level].points_by_value()["*"]
     for t in ts:
-        g.d[t] = "."
+        teleports.add((t, level))
+        gs[level].d[t] = "."
 
-p = start
-level = start_level
-steps = 0
-while True:
-    np = p + dir
-    steps += 1
+def run(start, start_level, dir, teleports):
+    q = deque([(start, start_level, dir, 0, teleports, set())])
 
-    if np == start and level == start_level:
-        print(steps)
-        break
+    while q:
+        p, level, dir, steps, teleports, seen = q.popleft()
 
-    nv = gs[level][np]
+        kseen = (p, level, dir, tuple(sorted(teleports)))
+        if kseen in seen:
+            continue
 
-    if nv == ".":
-        if np in teleports:
-            print("teleport!")
-        p = np
-    elif nv == ">":
-        p = np
-        level += 1
-    elif nv == "<":
-        p = np
-        level -= 1
-    else:
-        dir = turn(nv, dir)
+        np = p + dir
+        steps += 1
 
+        if np == start and level == start_level:
+            print(steps)
+            continue
+
+        nv = gs[level][np]
+
+        if nv == ".":
+            k = (np, level)
+            if k in teleports:
+                ntps = teleports - {k}
+                assert len(ntps) == len(teleports) - 1
+                for nk in ntps:
+                    tp, nl = nk
+                    assert len(ntps - {nk}) == len(teleports) - 2
+                    q.append((tp, nl, dir, steps, ntps - {nk}, seen | {kseen}))
+            else:
+                q.append((np, level, dir, steps, teleports, seen | {kseen}))
+        elif nv == ">":
+            q.append((np, level+1, dir, steps, teleports, seen | {kseen}))
+        elif nv == "<":
+            q.append((np, level-1, dir, steps, teleports, seen | {kseen}))
+        else:
+            q.append((p, level, turn(nv, dir), steps, teleports, seen | {kseen}))
+
+run(start, start_level, dir, teleports)
