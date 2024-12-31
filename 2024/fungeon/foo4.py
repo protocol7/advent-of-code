@@ -60,10 +60,8 @@ DS = "0123456789+-*/%"
 stack = []
 p = start
 level = start_level
-steps = 0
 while True:
     np = p + dir
-    steps += 1
 
     if np == start and level == start_level:
         print(stack.pop())
