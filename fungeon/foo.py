@@ -37,6 +37,17 @@ WALLS = {
     "}": 3,
 }
 
+WW = {
+    N: "N",
+    NE: "NE",
+    E: "E",
+    SE: "SE",
+    S: "S",
+    SW: "SW",
+    W: "W",
+    NW: "NW",
+}
+
 def turn(wall, dir):
     w = WALLS[wall]
     return DIRS[(DIRS.index(dir) + w) % 8]
@@ -55,37 +66,76 @@ start = gs[start_level].points_by_value()["<"][0]
 gs[start_level].d[start] = "."
 dir = N
 
-DS = "0123456789+-*/%"
+DS = "+-*/%:;,"
 
 stack = []
 p = start
 level = start_level
+steps = 0
 while True:
+
+    steps += 1
+
     np = p + dir
 
     if np == start and level == start_level:
-        print(stack.pop())
+        if stack:
+            print(stack.pop())
+        else:
+            print(steps)
         break
 
     nv = gs[level][np]
 
-    if nv in DS:
-        if nv.isdigit():
-            stack.append(int(nv))
-        else:
-            b = stack.pop()
-            a = stack.pop()
+    if nv.isdigit():
+        stack.append(int(nv))
 
-            if nv == "+":
-                stack.append(a + b)
-            elif nv == "-":
-                stack.append(a - b)
-            elif nv == "*":
-                stack.append(a * b)
-            elif nv == "/":
-                stack.append(a // b)
-            elif nv == "%":
-                stack.append(a % b)
+        p = np
+    elif nv in "+-*/%;":
+        b = stack.pop()
+        a = stack.pop()
+
+        if nv == "+":
+            stack.append(a + b)
+        elif nv == "-":
+            stack.append(a - b)
+        elif nv == "*":
+            stack.append(a * b)
+        elif nv == "/":
+            stack.append(a // b)
+        elif nv == "%":
+            stack.append(a % b)
+        elif nv == ";":
+            # swap the numbers on top of the stack
+            stack.append(b)
+            stack.append(a)
+
+        p = np
+    elif nv in ":,":
+        a = stack.pop()
+
+        if nv == ":":
+            stack.append(a)
+            stack.append(a)
+        elif nv == ",":
+            # discard the number on top of the stack
+            pass
+
+        p = np
+    elif nv == "=":
+        # Whenever you step onto a = tile, you pop a number b from the stack,
+        # then pop another number a from the stack, and finally turn based on
+        # how the numbers compare. You turn 90 degrees left if a < b, or 90
+        # degrees right if a > b. If the numbers are equal, your direction
+        # remains the same as before.
+
+        b = stack.pop()
+        a = stack.pop()
+
+        if a < b:
+            dir = turn("[", dir)
+        elif a > b:
+            dir = turn("]", dir)
 
         p = np
     elif nv == ".":

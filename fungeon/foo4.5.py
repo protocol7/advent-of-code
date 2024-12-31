@@ -55,37 +55,69 @@ start = gs[start_level].points_by_value()["<"][0]
 gs[start_level].d[start] = "."
 dir = N
 
-teleports = set()
+DS = "0123456789+-*/%"
 
-for g in gs:
-    ts = g.points_by_value()["*"]
-    teleports.update(ts)
-    for t in ts:
-        g.d[t] = "."
+def run(gs, start, dir, level):
+    stack = []
+    p = start
+    level = start_level
+    while True:
+        np = p + dir
 
-p = start
-level = start_level
-steps = 0
-while True:
-    np = p + dir
-    steps += 1
+        if np == start and level == start_level:
+            return stack.pop()
 
-    if np == start and level == start_level:
-        print(steps)
-        break
+        nv = gs[level][np]
 
-    nv = gs[level][np]
+        if nv in DS:
+            if nv.isdigit():
+                stack.append(int(nv))
+            else:
+                b = stack.pop()
+                a = stack.pop()
 
-    if nv == ".":
-        if np in teleports:
-            print("teleport!")
-        p = np
-    elif nv == ">":
-        p = np
-        level += 1
-    elif nv == "<":
-        p = np
-        level -= 1
-    else:
-        dir = turn(nv, dir)
+                if nv == "+":
+                    stack.append(a + b)
+                elif nv == "-":
+                    stack.append(a - b)
+                elif nv == "*":
+                    stack.append(a * b)
+                elif nv == "/":
+                    stack.append(a // b)
+                elif nv == "%":
+                    stack.append(a % b)
 
+            p = np
+        elif nv == ".":
+            p = np
+        elif nv == ">":
+            p = np
+            level += 1
+        elif nv == "<":
+            p = np
+            level -= 1
+        else:
+            dir = turn(nv, dir)
+
+OPS = "+-*/%"
+
+for i in range(len(gs)):
+    for op in OPS:
+        ps = gs[i].points_by_value()[op]
+
+        for p in ps:
+            for other_op in OPS:
+                if other_op == op:
+                    continue
+
+                gs[i].d[p] = other_op
+
+                try:
+                    ff = run(gs, start, dir, start_level)
+
+                    if ff % 2025 == 0:
+                        print("2025!", i, p, op, other_op, ff)
+                except ZeroDivisionError:
+                    pass
+
+                gs[i].d[p] = op
