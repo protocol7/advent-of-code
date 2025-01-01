@@ -3,7 +3,7 @@
 import sys
 from util import *
 
-# https://spotify.slack.com/archives/C2RUDPD63/p1735238455771449
+# https://github.com/elemel/fungeon-call
 #
 # You have entered a dungeon. You are still standing at the bottom of the staircase where you entered
 # (marked < on the map), facing north (up on the map). Before leaving the dungeon, you are compelled
@@ -24,6 +24,8 @@ from util import *
 # direction. As before, you always walk forward if you can. You turn 135 degrees left in front of {
 # walls, 45 degrees left in front of ( walls, 45 degrees right in front of ) walls, and 135 degrees
 # right in front of } walls.
+#
+# ...
 
 DIRS = [N, NE, E, SE, S, SW, W, NW]
 
@@ -66,14 +68,11 @@ start = gs[start_level].points_by_value()["<"][0]
 gs[start_level].d[start] = "."
 dir = N
 
-DS = "+-*/%:;,"
-
 stack = []
 p = start
 level = start_level
 steps = 0
 while True:
-
     steps += 1
 
     np = p + dir
@@ -87,11 +86,13 @@ while True:
 
     nv = gs[level][np]
 
+    # print(p, WW[dir], np, nv, stack)
+
     if nv.isdigit():
         stack.append(int(nv))
 
         p = np
-    elif nv in "+-*/%;":
+    elif nv in "+-*/%;&|^\\":
         b = stack.pop()
         a = stack.pop()
 
@@ -109,9 +110,28 @@ while True:
             # swap the numbers on top of the stack
             stack.append(b)
             stack.append(a)
+        elif nv == "&":
+            stack.append(a & b)
+        elif nv == "|":
+            stack.append(a | b)
+        elif nv == "^":
+            stack.append(a ^ b)
+        elif nv == "\\":
+            # signed -> unsigned
+            a = a & 0xFFFFFFFF
+
+            # b is the number of bits to rotate, constrained to 0 <= b < 32
+            b = b % 32
+
+            # rotate left
+            ans = ((a << b) | (a >> (32 - b))) & 0xFFFFFFFF
+            # unsigned -> signed
+            ans = (ans ^ 0x80000000) - 0x80000000
+
+            stack.append(ans)
 
         p = np
-    elif nv in ":,":
+    elif nv in ":,~":
         a = stack.pop()
 
         if nv == ":":
@@ -120,6 +140,9 @@ while True:
         elif nv == ",":
             # discard the number on top of the stack
             pass
+        elif nv == "~":
+            # swap the numbers on top of the stack
+            stack.append(~a)
 
         p = np
     elif nv == "=":
@@ -148,4 +171,3 @@ while True:
         level -= 1
     else:
         dir = turn(nv, dir)
-
