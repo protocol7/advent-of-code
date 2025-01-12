@@ -1,33 +1,13 @@
 #!/usr/bin/env python3
 
 import sys
+from collections import defaultdict
+from string import ascii_letters, ascii_lowercase, ascii_uppercase
 from util import *
 
-# https://github.com/elemel/fungeon-call
-#
-# You have entered a dungeon. You are still standing at the bottom of the staircase where you entered
-# (marked < on the map), facing north (up on the map). Before leaving the dungeon, you are compelled
-# to explore it.
-#
-# You can walk on the floor tiles (marked . on the map). You always walk forward if you can, without
-# turning. Walking to the next tile takes one tick of dungeon time.
-# Whenever you are about to walk into a wall (marked [, #, or ] on the map), you instead stay where
-# you are and turn. You turn 90 degrees left in front of [ walls, 180 degrees around in front of # walls,
-# and 90 degrees right in front of ] walls. Staying and turning also takes one tick. If you still face a
-# wall after turning, that is handled during the next tick.
-#
-# You start counting ticks immediately, including any time spent turning before leaving the staircase.
-# After how many ticks do you return to the staircase?
-#
-# In this dungeon, there are additional wall types for turning diagonally (marked {, (, ), and } on the
-# map). While facing a diagonal direction, the tile in front of you is the next tile in the diagonal
-# direction. As before, you always walk forward if you can. You turn 135 degrees left in front of {
-# walls, 45 degrees left in front of ( walls, 45 degrees right in front of ) walls, and 135 degrees
-# right in front of } walls.
-#
-# ...
+# https://github.com/elemel/call-of-the-fungeon
 
-DIRS = [N, NE, E, SE, S, SW, W, NW]
+DIRS = [E, SE, S, SW, W, NW, N, NE]
 
 WALLS = {
     "#": 4,
@@ -50,12 +30,57 @@ WW = {
     NW: "NW",
 }
 
-def turn(wall, dir):
+def turn(wall, registers):
+    assert wall != "#"
+
     w = WALLS[wall]
-    return DIRS[(DIRS.index(dir) + w) % 8]
+    registers["r"] = registers["r"] + w
+
+def dir(registers):
+    return DIRS[registers["r"] % 8]
 
 def parse(line):
     return line.strip()
+
+registers = defaultdict(int)
+stack = [0] * 10000
+
+def push(x):
+    stack[registers["s"]] =  x
+    registers["s"] += 1
+
+def pop():
+    registers["s"] -= 1
+    return stack[registers["s"]]
+
+def position(gs, p, level):
+    pos = 0
+
+    for i in range(level):
+        mx, my = gs[i].max()
+        size = (mx + 1) * (my + 1)
+        pos += size
+
+    mx, _ = gs[level].max()
+
+    return pos + p.x + p.y * (mx + 1)
+
+def from_position(gs, pos):
+    for level, g in enumerate(gs):
+        mx, my = gs[level].max()
+        size = (mx + 1) * (my + 1)
+
+        if pos > size:
+            pos -= size
+        else:
+            break
+
+    mx, _ = gs[level].max()
+
+    y = pos // (mx + 1)
+    x = pos % (mx + 1)
+
+    return Point(x, y), level
 
 xss = sys.stdin.read().strip().split("\n\n")
 
@@ -66,56 +91,84 @@ start_level = 0
 
 start = gs[start_level].points_by_value()["<"][0]
 gs[start_level].d[start] = "."
-dir = N
 
-stack = []
 p = start
 level = start_level
 steps = 0
 while True:
     steps += 1
 
-    np = p + dir
-
-    if np == start and level == start_level:
-        if stack:
-            print(stack.pop())
-        else:
-            print(steps)
-        break
-
+    np = p + dir(registers)
     nv = gs[level][np]
 
-    # print(p, WW[dir], np, nv, stack)
+    # print(steps, p, WW[dir(registers)], np, nv, stack[:registers["s"]], dict(registers))
+
+    npos = position(gs, np, level)
+
+    if (np == start and level == start_level) or npos < 0:
+        print(steps)
+        break
 
     if nv.isdigit():
-        stack.append(int(nv))
+        push(int(nv))
+
+        p = np
+    elif nv in "pP_":
+        if nv == "p":
+            # get your position as a number, then push that number onto the stack
+            push(npos)
+        elif nv == "P":
+            # pop a number from the stack, then set your position to that number
+            np, level = from_position(gs, pop())
+        else:
+            # pop a number b from the stack, then get your position as another number a, then push a onto the stack, and finally set your position to b
+            b = pop()
+            a = npos
+            push(a)
+            np, level = from_position(gs, b)
+
+        p = np
+    elif nv in "sS":
+        if nv == "s":
+            # get the stack size as a number, then push that number onto the stack
+            push(registers["s"])
+        else:
+            # pop a number from the stack, then set the stack size to that number
+            # stack starts at the end of the list
+            registers["s"] = pop()
+
+        p = np
+    elif nv in ascii_letters:
+        if nv in ascii_lowercase:
+            push(registers[nv])
+        else:
+            registers[nv.lower()] = pop()
 
         p = np
     elif nv in "+-*/%;&|^\\":
-        b = stack.pop()
-        a = stack.pop()
+        b = pop()
+        a = pop()
 
         if nv == "+":
-            stack.append(a + b)
+            push(a + b)
         elif nv == "-":
-            stack.append(a - b)
+            push(a - b)
         elif nv == "*":
-            stack.append(a * b)
+            push(a * b)
         elif nv == "/":
-            stack.append(a // b)
+            push(a // b)
         elif nv == "%":
-            stack.append(a % b)
+            push(a % b)
         elif nv == ";":
             # swap the numbers on top of the stack
-            stack.append(b)
-            stack.append(a)
+            push(b)
+            push(a)
         elif nv == "&":
-            stack.append(a & b)
+            push(a & b)
         elif nv == "|":
-            stack.append(a | b)
+            push(a | b)
         elif nv == "^":
-            stack.append(a ^ b)
+            push(a ^ b)
         elif nv == "\\":
             # signed -> unsigned
             a = a & 0xFFFFFFFF
@@ -128,21 +181,21 @@ while True:
             # unsigned -> signed
             ans = (ans ^ 0x80000000) - 0x80000000
 
-            stack.append(ans)
+            push(ans)
 
         p = np
     elif nv in ":,~":
-        a = stack.pop()
+        a = pop()
 
         if nv == ":":
-            stack.append(a)
-            stack.append(a)
+            push(a)
+            push(a)
         elif nv == ",":
             # discard the number on top of the stack
             pass
         elif nv == "~":
-            # swap the numbers on top of the stack
-            stack.append(~a)
+            # invert the number on top of the stack
+            push(~a)
 
         p = np
     elif nv == "=":
@@ -152,13 +205,13 @@ while True:
         # degrees right if a > b. If the numbers are equal, your direction
         # remains the same as before.
 
-        b = stack.pop()
-        a = stack.pop()
+        b = pop()
+        a = pop()
 
         if a < b:
-            dir = turn("[", dir)
+            turn("[", registers)
         elif a > b:
-            dir = turn("]", dir)
+            turn("]", registers)
 
         p = np
     elif nv == ".":
@@ -170,4 +223,4 @@ while True:
         p = np
         level -= 1
     else:
-        dir = turn(nv, dir)
+        turn(nv, registers)
