@@ -10,7 +10,6 @@ from util import *
 DIRS = [E, SE, S, SW, W, NW, N, NE]
 
 WALLS = {
-    "#": 4,
     "[": -2,
     "]": 2,
     "(": -1,
@@ -31,8 +30,6 @@ WW = {
 }
 
 def turn(wall, registers):
-    assert wall != "#"
-
     w = WALLS[wall]
     registers["r"] = registers["r"] + w
 
@@ -101,15 +98,86 @@ while True:
     np = p + dir(registers)
     nv = gs[level][np]
 
-    # print(steps, p, WW[dir(registers)], np, nv, stack[:registers["s"]], dict(registers))
 
     npos = position(gs, np, level)
 
     if (np == start and level == start_level) or npos < 0:
+        print()
         print(steps)
         break
 
-    if nv.isdigit():
+    if nv == "$":
+        # Whenever you step onto a mimic tile, pop a number from the stack.
+        # Act as if you stepped onto a tile with that number as extended ASCII code.
+        # For a wall tile, move backward to the tile before the mimic tile, then turn
+        # as specified by the wall tile. This counts as a single step.
+        nv = chr(pop())
+
+        if nv in WALLS:
+            np = p
+            npos = position(gs, np, level)
+
+    # print(steps, p, WW[dir(registers)], np, nv, stack[:registers["s"]], dict(registers))
+
+    if nv == "'":
+        # This dungeon contains stash tiles (marked ' on the map), mimic tiles (marked $), and passage tiles (marked ").
+        # Whenever you step onto a stash tile, move forward to the next tile immediately, then push the extended
+        # ASCII code (0 through 255) of that tile onto the stack. This counts as a single step, and lets you
+        # stand on any tile, including wall tiles.
+        np = np + dir(registers)
+        nv = gs[level][np]
+        npos = position(gs, np, level)
+
+        push(ord(nv))
+
+        p = np
+    elif nv == '"':
+        # Whenever you step onto a passage tile, search for the next passage tile in your facing direction.
+        # If you find one, push your position onto the stack, then move to the other passage tile, and finally
+        # push your position onto the stack again. This counts as a single step, and lets you pass through any
+        # tile, including wall tiles.
+        nnp = np + dir(registers)
+        while gs[level][nnp] != '"':
+            nnp = nnp + dir(registers)
+
+        if nnp:
+            push(npos)
+            np = nnp
+            npos = position(gs, np, level)
+            push(npos)
+
+        p = np
+
+    elif nv == "?":
+        # This dungeon contains reader tiles (marked ? on the map) and writer tiles (marked !).
+
+        # Whenever you step onto a reader tile, pop a number a from the stack. Find the tile at position a, t
+        # hen get the extended ASCII code of that tile as another number b. Finally, push b onto the stack.
+
+        # Whenever you step onto a writer tile, pop two numbers from the stack: first b, then a.
+        # Find the tile at position a, then set the extended ASCII code of that tile to b % 256.
+
+        a = pop()
+
+        apoint, alevel = from_position(gs, a)
+        b = ord(gs[alevel][apoint])
+
+        push(b)
+
+        p = np
+    elif nv == "!":
+        b = pop()
+        a = pop()
+
+        if a == -2:
+            #print(b)
+            print(chr(b % 256), end="")
+        else:
+            apoint, alevel = from_position(gs, a)
+            gs[alevel].d[apoint] = chr(b % 256)
+
+        p = np
+    elif nv.isdigit():
         push(int(nv))
 
         p = np
